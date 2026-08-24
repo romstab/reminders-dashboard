@@ -3291,238 +3291,158 @@ body.role-visitor .ou-react-btn {
 
 
 
+
 /* =====================================================================
-   DESIGN SYSTEM v5 — Premium BSCS 1-A Section Hub (visual only)
-   Rich surfaces · hierarchy · feature cards · mobile-first
+   PROFESSIONAL REFINEMENT v6 — preserve original structure & logo
+   Formal · premium · subtle energy lines · no emojis
    ===================================================================== */
-:root {
-  --hub-navy-0: #030712;
-  --hub-navy-1: #0a1628;
-  --hub-navy-2: #122038;
-  --hub-ink: #e8eef7;
-  --hub-muted: #8b9bb4;
-  --hub-faint: #64748b;
-  --hub-cyan: #22d3ee;
-  --hub-aqua: #2dd4bf;
-  --hub-blue: #60a5fa;
-  --hub-violet: #a78bfa;
-  --hub-gold: #fbbf24;
-  --hub-amber: #f59e0b;
-  --hub-radius-lg: 20px;
-  --hub-radius-md: 16px;
-  --hub-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
-  --hub-glow-cyan: 0 0 40px rgba(34, 211, 238, 0.12);
-  --hub-glow-gold: 0 0 36px rgba(251, 191, 36, 0.14);
-}
 
-/* Ambient page depth */
-body {
-  background-color: var(--hub-navy-0) !important;
-}
-.grid-bg {
-  opacity: 0.35;
-  background-image:
-    linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px) !important;
-  background-size: 48px 48px !important;
-}
-.topline {
-  height: 2px !important;
-  background: linear-gradient(90deg, transparent, var(--hub-cyan), var(--hub-violet), var(--hub-gold), transparent) !important;
-  opacity: 0.7;
-}
-
-/* —— NAV: quieter chrome —— */
-.nav {
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1) !important;
-  background: rgba(3, 7, 18, 0.85) !important;
-}
-
-/* —— HERO: identity centerpiece —— */
-.hero-main.glass {
-  position: relative;
-  border-radius: var(--hub-radius-lg) !important;
-  border: 1px solid rgba(148, 163, 184, 0.14) !important;
-  background:
-    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(34, 211, 238, 0.12), transparent 55%),
-    radial-gradient(ellipse 60% 50% at 0% 100%, rgba(167, 139, 250, 0.1), transparent 50%),
-    linear-gradient(165deg, rgba(18, 32, 56, 0.97), rgba(6, 12, 24, 0.98)) !important;
-  box-shadow: var(--hub-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
-  overflow: hidden;
-}
-.hero-main.glass::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(125deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
-  pointer-events: none;
-}
-.eyebrow {
-  display: inline-block;
-  padding: 0.28rem 0.65rem;
-  border-radius: 999px;
-  font-size: 0.62rem !important;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 800;
-  color: var(--hub-cyan) !important;
-  background: rgba(34, 211, 238, 0.1);
-  border: 1px solid rgba(34, 211, 238, 0.22);
-  margin-bottom: 0.75rem;
-}
+/* Restore original logo treatment (do not override size/shape aggressively) */
 .hero-top {
-  gap: 0.85rem !important;
+  grid-template-columns: 84px 1fr !important;
   align-items: center !important;
+  gap: 0.85rem !important;
 }
 .logo-shell {
-  width: 64px !important;
-  height: 64px !important;
-  border-radius: 18px !important;
-  overflow: hidden;
-  border: 1px solid rgba(34, 211, 238, 0.35) !important;
-  box-shadow:
-    0 0 0 4px rgba(34, 211, 238, 0.08),
-    0 12px 28px rgba(0, 0, 0, 0.4),
-    var(--hub-glow-cyan) !important;
-  background: rgba(0,0,0,0.35);
+  width: 80px !important;
+  height: 80px !important;
+  padding: 0.6rem !important;
+  border-radius: 50% !important;
+  /* keep original soft cyan ring; do not enlarge or box */
 }
-.hero-title {
-  margin: 0 !important;
-  font-size: clamp(1.45rem, 5.2vw, 2.35rem) !important;
-  font-weight: 900 !important;
-  line-height: 1.12 !important;
-  letter-spacing: -0.03em !important;
-  color: #f8fafc !important;
-  background: none !important;
-  -webkit-text-fill-color: #f8fafc;
-  text-shadow: 0 2px 24px rgba(34, 211, 238, 0.15);
+@media (min-width: 900px) {
+  .logo-shell { width: 112px !important; height: 112px !important; }
 }
-.hero-title-accent {
-  display: inline-block;
-  margin-left: 0.15em;
-  padding: 0.05em 0.4em 0.08em;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(96, 165, 250, 0.2));
-  border: 1px solid rgba(34, 211, 238, 0.35);
-  color: #5eead4 !important;
-  -webkit-text-fill-color: #5eead4;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
-}
-.hero-sub {
-  margin-top: 0.4rem !important;
-  font-size: 0.8rem !important;
-  color: var(--hub-muted) !important;
-  font-weight: 550 !important;
-  letter-spacing: 0.02em;
-  line-height: 1.35;
+@media (max-width: 380px) {
+  .logo-shell { width: 72px !important; height: 72px !important; }
 }
 
-/* —— FEATURED PIN —— */
-.admin-pin {
-  display: none;
-  position: relative;
-  margin: 1rem 0 1rem !important;
-  padding: 1.15rem 1.15rem 1rem 1.2rem !important;
-  border-radius: 18px !important;
-  border: 1px solid rgba(251, 191, 36, 0.32) !important;
-  background:
-    radial-gradient(ellipse 90% 80% at 100% 0%, rgba(251, 191, 36, 0.18), transparent 55%),
-    radial-gradient(ellipse 50% 60% at 0% 100%, rgba(34, 211, 238, 0.08), transparent 50%),
-    linear-gradient(155deg, rgba(40, 32, 18, 0.95), rgba(12, 18, 32, 0.98)) !important;
-  box-shadow:
-    var(--hub-glow-gold),
-    0 18px 40px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
-  overflow: hidden;
+/* Title: natural, connected typography */
+.hero-title {
+  margin: 0 !important;
+  font-size: clamp(1.35rem, 5vw, 2.75rem) !important;
+  line-height: 1.12 !important;
+  letter-spacing: 0.005em !important;
+  font-weight: 800 !important;
+  color: #f4f8fc !important;
+  background: none !important;
+  -webkit-text-fill-color: unset !important;
+  filter: none !important;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.35);
 }
-.admin-pin.is-visible { display: block; }
+.hero-title-accent {
+  display: inline !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: #5eead4 !important;
+  -webkit-text-fill-color: #5eead4 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em;
+}
+.hero-sub {
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+  font-size: clamp(0.82rem, 2vw, 1rem) !important;
+}
+
+/* Eyebrow: quieter, formal */
+.eyebrow {
+  font-size: 0.72rem !important;
+  letter-spacing: 0.08em;
+  color: rgba(148, 163, 184, 0.95) !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* —— SECTION PIN: featured but restrained —— */
+.admin-pin {
+  position: relative;
+  overflow: hidden;
+  margin: 0.9rem 0 !important;
+  padding: 1rem 1.05rem !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(251, 191, 36, 0.28) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 210, 125, 0.09), rgba(15, 23, 42, 0.55) 42%, rgba(15, 23, 42, 0.72)) !important;
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
 .admin-pin::before {
   content: "";
   position: absolute;
   left: 0; top: 0; bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, #fbbf24, #2dd4bf);
-  box-shadow: 0 0 16px rgba(251, 191, 36, 0.5);
+  width: 3px;
+  background: linear-gradient(180deg, #fbbf24, rgba(45, 212, 191, 0.6));
+}
+/* Energy line — top edge only, slow */
+.admin-pin.is-visible {
+  background-image:
+    linear-gradient(145deg, rgba(255, 210, 125, 0.09), rgba(15, 23, 42, 0.55) 42%, rgba(15, 23, 42, 0.72));
+}
+.admin-pin .pin-energy {
+  display: none;
+}
+.admin-pin .pin-label {
+  font-size: 0.64rem !important;
+  letter-spacing: 0.1em !important;
+  color: rgba(253, 230, 138, 0.9) !important;
+  font-weight: 800 !important;
+  margin-bottom: 0.45rem !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+.admin-pin .pin-body {
+  margin: 0 !important;
+  font-size: clamp(0.98rem, 3.4vw, 1.15rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.45 !important;
+  color: #f8fafc !important;
+}
+.admin-pin .pin-body::before,
+.admin-pin .pin-body::after {
+  content: none !important;
+}
+.pin-byline {
+  margin-top: 0.55rem !important;
+  font-size: 0.68rem !important;
+  color: rgba(148, 163, 184, 0.72) !important;
+  font-weight: 550 !important;
+}
+
+/* Animated top accent on pin */
+@keyframes hubEdgeSweep {
+  0% { transform: translateX(-100%); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
 }
 .admin-pin::after {
   content: "";
   position: absolute;
-  right: -20%;
-  top: -40%;
-  width: 55%;
-  height: 90%;
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.12), transparent 70%);
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.85), transparent);
+  animation: hubEdgeSweep 4.5s ease-in-out infinite;
   pointer-events: none;
 }
-.admin-pin .pin-label {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0 0 0.65rem !important;
-  padding: 0.22rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.6rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase;
-  color: #fde68a !important;
-  background: rgba(251, 191, 36, 0.12);
-  border: 1px solid rgba(251, 191, 36, 0.25);
-}
-.admin-pin .pin-body {
-  position: relative;
-  z-index: 1;
-  margin: 0 !important;
-  font-size: clamp(1.05rem, 3.8vw, 1.28rem) !important;
-  font-weight: 750 !important;
-  line-height: 1.42 !important;
-  color: #fffbeb !important;
-  letter-spacing: -0.01em;
-}
-.pin-byline {
-  position: relative;
-  z-index: 1;
-  margin: 0.7rem 0 0 !important;
-  font-size: 0.65rem !important;
-  font-weight: 600 !important;
-  color: rgba(148, 163, 184, 0.7) !important;
-  letter-spacing: 0.03em;
-}
 
-/* —— SHORTCUT FEATURE CARDS —— */
+/* —— SHORTCUT CARDS: professional, unified palette —— */
 .shortcut-hint {
-  display: none;
-  margin: 0 0 0.55rem !important;
-  padding: 0.35rem 0.6rem !important;
-  border-radius: 10px;
   border: 1px solid rgba(148, 163, 184, 0.12) !important;
-  background: rgba(255,255,255,0.03) !important;
-  color: var(--hub-faint) !important;
-  font-size: 0.68rem !important;
-  font-weight: 650 !important;
-  text-align: center;
-  letter-spacing: 0.04em;
-}
-body.role-classmate .shortcut-hint.cm-only-hint,
-body.role-admin .shortcut-hint.cm-only-hint {
-  display: block;
+  background: rgba(255,255,255,0.02) !important;
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
 }
 .top-links {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 0.65rem !important;
-  margin: 0 0 0.9rem !important;
+  gap: 0.55rem !important;
 }
-@media (min-width: 560px) {
-  .top-links { grid-template-columns: repeat(4, 1fr) !important; }
-}
-
 body.role-classmate .cm-primary-link,
 body.role-admin .cm-primary-link {
   position: relative;
@@ -3531,219 +3451,162 @@ body.role-admin .cm-primary-link {
   align-items: center !important;
   justify-content: center !important;
   gap: 0.4rem !important;
-  min-height: 88px !important;
-  padding: 0.85rem 0.5rem !important;
-  border-radius: 18px !important;
+  min-height: 78px !important;
+  padding: 0.75rem 0.5rem !important;
+  border-radius: 16px !important;
   overflow: hidden;
   text-decoration: none !important;
-  border: 1px solid transparent !important;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35) !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 1px solid rgba(100, 255, 218, 0.16) !important;
+  background: linear-gradient(165deg, rgba(18, 30, 52, 0.95), rgba(8, 14, 26, 0.98)) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3) !important;
+  color: #e2e8f0;
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
   -webkit-tap-highlight-color: transparent;
 }
+/* Soft shared surface; accent via border + icon color only */
+body.role-classmate .top-link-ou,
+body.role-admin .top-link-ou {
+  border-color: rgba(34, 211, 238, 0.32) !important;
+  color: #67e8f9;
+}
+body.role-classmate .top-link-sched,
+body.role-admin .top-link-sched {
+  border-color: rgba(129, 140, 248, 0.32) !important;
+  color: #a5b4fc;
+}
+body.role-classmate .top-link-res,
+body.role-admin .top-link-res {
+  border-color: rgba(45, 212, 191, 0.3) !important;
+  color: #5eead4;
+}
+body.role-classmate .top-link-dash,
+body.role-admin .top-link-dash {
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  color: #fcd34d;
+}
+
+.cm-primary-link .tl-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: inherit;
+}
+.cm-primary-link .tl-icon svg {
+  width: 22px;
+  height: 22px;
+}
+.cm-primary-link .tl-title {
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  color: #f1f5f9 !important;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+.cm-primary-link .tl-kicker { display: none !important; }
+
+/* Edge energy line on cards */
 body.role-classmate .cm-primary-link::before,
 body.role-admin .cm-primary-link::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.14), transparent 45%);
+  top: 0; left: 0;
+  width: 40%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  opacity: 0.65;
+  animation: hubEdgeSweep 5.5s ease-in-out infinite;
   pointer-events: none;
 }
-body.role-classmate .cm-primary-link::after,
-body.role-admin .cm-primary-link::after {
-  content: "";
-  position: absolute;
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  right: -20px; bottom: -24px;
-  opacity: 0.55;
-  pointer-events: none;
-}
+body.role-classmate .top-link-sched::before,
+body.role-admin .top-link-sched::before { animation-delay: 0.8s; }
+body.role-classmate .top-link-res::before,
+body.role-admin .top-link-res::before { animation-delay: 1.6s; }
+body.role-classmate .top-link-dash::before,
+body.role-admin .top-link-dash::before { animation-delay: 2.4s; }
 
-/* Unique card identities */
-body.role-classmate .top-link-ou,
-body.role-admin .top-link-ou {
-  background: linear-gradient(145deg, #0c3d4a 0%, #0a1e2e 55%, #071018 100%) !important;
-  border-color: rgba(34, 211, 238, 0.4) !important;
-  box-shadow: 0 14px 32px rgba(0,0,0,0.35), 0 0 28px rgba(34, 211, 238, 0.12) !important;
-}
-body.role-classmate .top-link-ou::after,
-body.role-admin .top-link-ou::after {
-  background: radial-gradient(circle, rgba(34, 211, 238, 0.45), transparent 70%);
-}
-
-body.role-classmate .top-link-sched,
-body.role-admin .top-link-sched {
-  background: linear-gradient(145deg, #2a2150 0%, #141a32 55%, #0a0f1c 100%) !important;
-  border-color: rgba(167, 139, 250, 0.42) !important;
-  box-shadow: 0 14px 32px rgba(0,0,0,0.35), 0 0 28px rgba(167, 139, 250, 0.12) !important;
-}
-body.role-classmate .top-link-sched::after,
-body.role-admin .top-link-sched::after {
-  background: radial-gradient(circle, rgba(167, 139, 250, 0.45), transparent 70%);
-}
-
-body.role-classmate .top-link-res,
-body.role-admin .top-link-res {
-  background: linear-gradient(145deg, #0f3d36 0%, #0c241f 55%, #071412 100%) !important;
-  border-color: rgba(45, 212, 191, 0.4) !important;
-  box-shadow: 0 14px 32px rgba(0,0,0,0.35), 0 0 28px rgba(45, 212, 191, 0.12) !important;
-}
-body.role-classmate .top-link-res::after,
-body.role-admin .top-link-res::after {
-  background: radial-gradient(circle, rgba(45, 212, 191, 0.4), transparent 70%);
-}
-
-body.role-classmate .top-link-dash,
-body.role-admin .top-link-dash {
-  background: linear-gradient(145deg, #3d2e12 0%, #1f180c 55%, #0f0c08 100%) !important;
-  border-color: rgba(251, 191, 36, 0.42) !important;
-  box-shadow: 0 14px 32px rgba(0,0,0,0.35), 0 0 28px rgba(251, 191, 36, 0.14) !important;
-}
-body.role-classmate .top-link-dash::after,
-body.role-admin .top-link-dash::after {
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.4), transparent 70%);
-}
-
-.cm-primary-link .tl-kicker { display: none !important; }
-.cm-primary-link .tl-icon {
-  position: relative;
-  z-index: 1;
-  font-size: 1.55rem;
-  line-height: 1;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.35));
-}
-.cm-primary-link .tl-title {
-  position: relative;
-  z-index: 1;
-  font-size: 0.8rem !important;
-  font-weight: 850 !important;
-  color: #f1f5f9 !important;
-  text-align: center;
-  letter-spacing: 0.01em;
-  line-height: 1.2;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.35);
-}
-
+/* Hover / focus / active — premium, not bounce */
 body.role-classmate .cm-primary-link:hover,
 body.role-admin .cm-primary-link:hover,
 body.role-classmate .cm-primary-link:focus-visible,
 body.role-admin .cm-primary-link:focus-visible {
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 24px rgba(100, 255, 218, 0.08) !important;
   outline: none;
-  filter: brightness(1.08);
+  filter: brightness(1.06);
 }
 body.role-classmate .cm-primary-link:active,
 body.role-admin .cm-primary-link:active {
   transform: scale(0.97);
-  filter: brightness(0.96);
+  filter: brightness(1.12);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.35),
+    0 0 0 1px currentColor !important;
 }
 
-/* Guest top links — still refined */
-.guest-primary-link.top-link {
-  min-height: 48px;
-  border-radius: 14px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background: linear-gradient(145deg, rgba(22, 34, 56, 0.9), rgba(10, 16, 28, 0.95));
-  font-weight: 750;
-}
-
-/* —— Compact welcome —— */
+/* Welcome — compact, formal */
 .announce-welcome {
-  margin: 0 0 0.85rem !important;
-  padding: 0.75rem 0.95rem !important;
+  margin: 0.75rem 0 !important;
+  padding: 0.7rem 0.9rem !important;
   border-radius: 14px !important;
-  border: 1px solid rgba(34, 211, 238, 0.15) !important;
-  background:
-    linear-gradient(120deg, rgba(34, 211, 238, 0.08), transparent 50%),
-    rgba(12, 20, 36, 0.75) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(148, 163, 184, 0.14) !important;
+  background: linear-gradient(180deg, rgba(19, 34, 58, 0.65), rgba(12, 20, 36, 0.5)) !important;
+  box-shadow: none !important;
 }
-.announce-welcome p { margin: 0 !important; line-height: 1.4 !important; }
 .welcome-lead {
   display: block;
-  font-size: 0.98rem;
-  font-weight: 850;
-  color: #f0fdfa;
-  margin-bottom: 0.2rem;
-  letter-spacing: -0.01em;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin-bottom: 0.15rem;
 }
 .welcome-desc {
   font-size: 0.8rem;
-  color: var(--hub-muted);
+  color: #94a3b8;
   font-weight: 500;
 }
 
-/* —— Buttons —— */
-.btn, .arena-btn, .login-modal-btn {
-  border-radius: 14px !important;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease;
+/* Buttons — responsive, formal */
+.btn, .arena-btn, .login-modal-btn, .lifeline-btn {
+  transition: transform 0.15s ease, box-shadow 0.18s ease, border-color 0.18s ease, filter 0.15s ease !important;
+}
+.btn:hover, .arena-btn:hover, .login-modal-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+.btn:active, .arena-btn:active, .login-modal-btn:active, .lifeline-btn:active {
+  transform: scale(0.98);
+  filter: brightness(1.08);
 }
 .btn-primary {
-  background: linear-gradient(135deg, #14b8a6, #0ea5e9) !important;
-  border: 1px solid rgba(255,255,255,0.15) !important;
-  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.25) !important;
-  color: #041016 !important;
-  font-weight: 850 !important;
-}
-.btn-primary:hover, .btn-primary:focus-visible {
-  filter: brightness(1.08);
-  transform: translateY(-1px);
-}
-.btn:active, .arena-btn:active { transform: scale(0.98); }
-
-/* —— Section surfaces (unified, quieter than features) —— */
-.section-title h2 {
-  font-weight: 850 !important;
-  letter-spacing: -0.02em;
-  color: #f1f5f9;
-}
-.section-title {
-  border-left-width: 3px !important;
-  padding-left: 0.65rem;
-}
-.glass, .note-card, .statbox, .resource-card, .arena-panel, .padlet-box, .today-card {
-  border-color: rgba(148, 163, 184, 0.12) !important;
-  background: linear-gradient(165deg, rgba(16, 28, 48, 0.88), rgba(8, 14, 26, 0.94)) !important;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.28) !important;
-}
-.hero-side.glass {
-  border: 1px solid rgba(96, 165, 250, 0.2) !important;
-  background:
-    radial-gradient(ellipse at top right, rgba(96, 165, 250, 0.12), transparent 50%),
-    linear-gradient(165deg, rgba(16, 28, 48, 0.95), rgba(8, 14, 26, 0.98)) !important;
+  box-shadow: 0 8px 22px rgba(100, 255, 218, 0.18) !important;
 }
 
-/* Officer updates spotlight */
-.ou-top-title {
-  background: linear-gradient(90deg, #67e8f9, #a5b4fc);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 900;
+/* Quieter section surfaces — hierarchy */
+.section-title span {
+  color: #94a3b8 !important;
 }
-
-/* Footer quieter */
-footer, .footer-box {
-  border-color: rgba(148, 163, 184, 0.1);
+.glass, .note-card, .statbox, .resource-card, .arena-panel {
+  border-color: rgba(148, 163, 184, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .admin-pin::after,
+  body.role-classmate .cm-primary-link::before,
+  body.role-admin .cm-primary-link::before {
+    animation: none !important;
+  }
   .cm-primary-link, .btn, .arena-btn {
     transition: none !important;
-  }
-  body.role-classmate .cm-primary-link:hover,
-  body.role-admin .cm-primary-link:hover {
-    transform: none;
-  }
-}
-
-@media (max-width: 380px) {
-  .cm-primary-link .tl-title { font-size: 0.72rem !important; }
-  .logo-shell { width: 56px !important; height: 56px !important; }
-  body.role-classmate .cm-primary-link,
-  body.role-admin .cm-primary-link {
-    min-height: 80px !important;
   }
 }
 
@@ -3929,7 +3792,7 @@ footer, .footer-box {
           </div>
 
           <div>
-            <h1 class="hero-title">BS Computer Science <span class="hero-title-accent">1A</span></h1>
+            <h1 class="hero-title">BS Computer Science <span class="hero-title-accent">- 1A</span></h1>
             <p class="hero-sub">Official Section Hub | LSPU Siniloan Campus | Batch 2026</p>
           </div>
         </div>
@@ -3944,19 +3807,19 @@ footer, .footer-box {
         <div class="top-links" aria-label="Essential shortcuts">
           <!-- Classmates / Admin: primary section shortcuts first -->
           <a class="top-link cm-primary-link top-link-ou js-smooth" href="#officer-updates">
-            <span class="tl-icon" aria-hidden="true">📣</span>
+            <span class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a9 9 0 0 0 18 0v-2"/><path d="M12 3a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4z"/><path d="M12 19v2"/></svg></span>
             <span class="tl-title">Officer Updates</span>
           </a>
           <a class="top-link cm-primary-link top-link-sched js-smooth" href="#schedule">
-            <span class="tl-icon" aria-hidden="true">📅</span>
+            <span class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
             <span class="tl-title">Schedule</span>
           </a>
           <a class="top-link cm-primary-link top-link-res js-smooth" href="#resources">
-            <span class="tl-icon" aria-hidden="true">📚</span>
+            <span class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg></span>
             <span class="tl-title">Resources</span>
           </a>
           <a class="top-link cm-primary-link top-link-dash is-dashboard locked-for-guest" href="dashboard.html" data-lock="classmate">
-            <span class="tl-icon" aria-hidden="true">📊</span>
+            <span class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
             <span class="tl-title">Class Dashboard</span>
           </a>
           <!-- Guests: external / public links stay on the home strip -->
