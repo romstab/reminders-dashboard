@@ -3289,6 +3289,247 @@ body.role-visitor .ou-react-btn {
     }
     .hub-ai-foot button:disabled { opacity: 0.55; }
 
+
+/* =====================================================================
+   UI/UX polish v4 — premium mobile-first Section Hub (visual only)
+   ===================================================================== */
+:root {
+  --surface-1: rgba(12, 22, 40, 0.82);
+  --surface-2: rgba(16, 28, 48, 0.9);
+  --border-soft: rgba(148, 163, 184, 0.14);
+  --border-accent: rgba(93, 255, 224, 0.28);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --gold-soft: rgba(255, 210, 125, 0.55);
+}
+
+/* Hero identity */
+.hero-title {
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #ffffff 20%, #c8fff3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.25));
+}
+.hero-title-accent {
+  background: linear-gradient(90deg, #5dffe0, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 900;
+}
+.hero-sub {
+  color: var(--text-secondary) !important;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  max-width: 36ch;
+}
+.hero-main.glass {
+  border: 1px solid var(--border-soft);
+  background: linear-gradient(165deg, rgba(18,30,52,0.94), rgba(8,14,28,0.96));
+  box-shadow: 0 18px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.eyebrow {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.9) !important;
+  font-weight: 700;
+  margin-bottom: 0.55rem;
+}
+.logo-shell {
+  box-shadow: 0 0 0 2px rgba(93, 255, 224, 0.22), 0 10px 28px rgba(0,0,0,0.35);
+}
+
+/* —— SECTION PIN (hierarchy: message > label > byline) —— */
+.admin-pin {
+  margin: 0.85rem 0 0.9rem !important;
+  padding: 1rem 1.05rem 0.9rem !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255, 210, 125, 0.28) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 210, 125, 0.1), rgba(12, 22, 40, 0.55) 45%, rgba(56, 189, 248, 0.05)) !important;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  position: relative;
+  overflow: hidden;
+}
+.admin-pin::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #ffd27d, rgba(93, 255, 224, 0.5));
+  border-radius: 3px 0 0 3px;
+}
+.admin-pin .pin-label {
+  font-size: 0.62rem !important;
+  letter-spacing: 0.14em !important;
+  color: rgba(255, 210, 125, 0.85) !important;
+  font-weight: 800 !important;
+  margin-bottom: 0.55rem !important;
+  opacity: 0.95;
+}
+.admin-pin .pin-body {
+  margin: 0 !important;
+  font-size: clamp(1rem, 3.6vw, 1.18rem) !important;
+  font-weight: 750 !important;
+  line-height: 1.45 !important;
+  color: #f8fafc !important;
+  letter-spacing: 0.01em;
+  padding: 0.15rem 0 0.35rem;
+}
+.admin-pin .pin-body::before {
+  content: "“";
+  color: rgba(255, 210, 125, 0.45);
+  font-weight: 400;
+  margin-right: 0.1rem;
+}
+.admin-pin .pin-body::after {
+  content: "”";
+  color: rgba(255, 210, 125, 0.45);
+  font-weight: 400;
+  margin-left: 0.1rem;
+}
+.pin-byline {
+  margin: 0.55rem 0 0 !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  color: rgba(148, 163, 184, 0.75) !important;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+}
+
+/* —— Shortcut nav cards —— */
+.shortcut-hint {
+  border-style: solid !important;
+  border-color: rgba(148, 163, 184, 0.15) !important;
+  background: rgba(255,255,255,0.03) !important;
+  color: var(--text-secondary) !important;
+  font-weight: 650 !important;
+  letter-spacing: 0.03em;
+}
+.top-links {
+  gap: 0.55rem !important;
+  margin-bottom: 0.75rem !important;
+}
+body.role-classmate .cm-primary-link,
+body.role-admin .cm-primary-link {
+  min-height: 64px !important;
+  padding: 0.7rem 0.55rem !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--border-soft) !important;
+  background: linear-gradient(160deg, rgba(22, 34, 56, 0.95), rgba(10, 16, 30, 0.92)) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.22) !important;
+  gap: 0.28rem !important;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+}
+.cm-primary-link .tl-kicker { display: none !important; }
+.cm-primary-link .tl-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  filter: grayscale(0.15);
+}
+.cm-primary-link .tl-title {
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  color: #e2e8f0 !important;
+  text-align: center;
+}
+body.role-classmate .top-link-ou,
+body.role-admin .top-link-ou {
+  border-color: rgba(56, 189, 248, 0.28) !important;
+}
+body.role-classmate .top-link-sched,
+body.role-admin .top-link-sched {
+  border-color: rgba(167, 139, 250, 0.28) !important;
+}
+body.role-classmate .top-link-res,
+body.role-admin .top-link-res {
+  border-color: rgba(52, 211, 153, 0.28) !important;
+}
+body.role-classmate .top-link-dash,
+body.role-admin .top-link-dash {
+  border-color: rgba(255, 210, 125, 0.32) !important;
+}
+body.role-classmate .cm-primary-link:hover,
+body.role-admin .cm-primary-link:hover,
+body.role-classmate .cm-primary-link:focus-visible,
+body.role-admin .cm-primary-link:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(93, 255, 224, 0.4) !important;
+  box-shadow: 0 14px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(93, 255, 224, 0.12) !important;
+  outline: none;
+}
+body.role-classmate .cm-primary-link:active,
+body.role-admin .cm-primary-link:active {
+  transform: scale(0.98);
+}
+
+/* —— Compact welcome —— */
+.announce-welcome {
+  margin: 0 0 0.75rem !important;
+  padding: 0.7rem 0.9rem !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--border-soft) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  box-shadow: none !important;
+}
+.announce-welcome p {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+  font-size: 0.86rem !important;
+}
+.welcome-lead {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin-bottom: 0.15rem;
+}
+.welcome-desc {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.82rem;
+}
+
+/* Global polish: cards & sections */
+.section-title h2 {
+  letter-spacing: -0.01em;
+  font-weight: 800;
+}
+.glass, .note-card, .statbox, .resource-card, .arena-panel {
+  border-color: var(--border-soft);
+}
+.btn, .arena-btn {
+  transition: transform 0.15s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.btn:active, .arena-btn:active {
+  transform: scale(0.98);
+}
+.btn-primary {
+  box-shadow: 0 8px 24px rgba(93, 255, 224, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-primary-link,
+  .btn, .arena-btn {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero-main { padding: 0.95rem !important; }
+  .admin-pin { padding: 0.9rem !important; }
+  .cm-primary-link .tl-title { font-size: 0.72rem !important; }
+}
+
 </style>
 </head>
 <body>
@@ -3471,7 +3712,7 @@ body.role-visitor .ou-react-btn {
           </div>
 
           <div>
-            <h1 class="hero-title">BS Computer Science - 1A</h1>
+            <h1 class="hero-title">BS Computer Science <span class="hero-title-accent">- 1A</span></h1>
             <p class="hero-sub">Official Section Hub | LSPU Siniloan Campus | Batch 2026</p>
           </div>
         </div>
@@ -3486,19 +3727,19 @@ body.role-visitor .ou-react-btn {
         <div class="top-links" aria-label="Essential shortcuts">
           <!-- Classmates / Admin: primary section shortcuts first -->
           <a class="top-link cm-primary-link top-link-ou js-smooth" href="#officer-updates">
-            <span class="tl-kicker">Shortcut</span>
+            <span class="tl-icon" aria-hidden="true">📢</span>
             <span class="tl-title">Officer Updates</span>
           </a>
           <a class="top-link cm-primary-link top-link-sched js-smooth" href="#schedule">
-            <span class="tl-kicker">Shortcut</span>
+            <span class="tl-icon" aria-hidden="true">📅</span>
             <span class="tl-title">Schedule</span>
           </a>
           <a class="top-link cm-primary-link top-link-res js-smooth" href="#resources">
-            <span class="tl-kicker">Shortcut</span>
+            <span class="tl-icon" aria-hidden="true">📚</span>
             <span class="tl-title">Resources</span>
           </a>
           <a class="top-link cm-primary-link top-link-dash is-dashboard locked-for-guest" href="dashboard.html" data-lock="classmate">
-            <span class="tl-kicker">Shortcut</span>
+            <span class="tl-icon" aria-hidden="true">📊</span>
             <span class="tl-title">Class Dashboard</span>
           </a>
           <!-- Guests: external / public links stay on the home strip -->
@@ -3508,9 +3749,10 @@ body.role-visitor .ou-react-btn {
           <a class="top-link guest-primary-link" href="https://lspusys.com" target="_blank" rel="noopener noreferrer">School Portal</a>
         </div>
 
-        <div class="announce reveal-on-load" role="status" aria-live="polite">
+        <div class="announce announce-welcome reveal-on-load" role="status" aria-live="polite">
           <p>
-            <strong>Welcome, BSCS 1-A.</strong> Section hub for schedule, officers, Reviewer Arena, and class resources — built for phones first.
+            <strong class="welcome-lead">Welcome, BSCS 1-A.</strong>
+            <span class="welcome-desc"> Schedule, officers, Reviewer Arena, and class resources — built for phones first.</span>
           </p>
         </div>
 
