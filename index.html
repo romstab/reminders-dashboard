@@ -3613,9 +3613,10 @@ body.role-admin .cm-primary-link:active {
 
 
 
+
 /* =====================================================================
-   PERIMETER ENERGY v9 — full-border loading streak for ALL visitors
-   top→right→bottom→left; NO background spinning; guests included
+   PERIMETER ENERGY v10 — mockup-style full-border energy
+   Visible rim + traveling bright head/tail · all users · no BG spin
    ===================================================================== */
 
 @property --hub-spin {
@@ -3633,32 +3634,170 @@ body.role-admin .cm-primary-link:active {
   100% { background-position: -40% 50%; }
 }
 
-@keyframes hubIconPulse {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.15); }
-}
-
-/* Absolutely no mid-page / diagonal background motion */
+/* No background / diagonal animations */
 body::before,
 body::after {
   content: none !important;
   display: none !important;
   animation: none !important;
-  background: none !important;
 }
-.matrix-bg,
-.grid-bg {
-  animation: none !important;
-}
+.matrix-bg, .grid-bg { animation: none !important; }
 
-/* Shared perimeter recipe (EDGE ONLY via mask) */
-.hub-perimeter,
+/* Base: important boxes get a visible colored rim + moving streak */
 .hero-main.glass,
 .admin-pin.is-visible,
 .cm-primary-link,
 .guest-primary-link.top-link,
 .announce-welcome,
-.hero-side.glass,
+.hero-side.glass {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+  /* static rim (always visible like mockup) */
+  box-shadow:
+    0 0 0 1px var(--hub-rim, rgba(34, 211, 238, 0.45)),
+    0 0 18px var(--hub-glow, rgba(34, 211, 238, 0.18)),
+    0 12px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+.hero-main.glass {
+  --hub-rim: rgba(34, 211, 238, 0.5);
+  --hub-glow: rgba(34, 211, 238, 0.22);
+  --hub-live: #22d3ee;
+  --hub-live-2: #7dd3fc;
+  --hub-live-speed: 4.5s;
+}
+.admin-pin.is-visible {
+  --hub-rim: rgba(251, 191, 36, 0.55);
+  --hub-glow: rgba(251, 191, 36, 0.22);
+  --hub-live: #fbbf24;
+  --hub-live-2: #fde68a;
+  --hub-live-speed: 5.5s;
+}
+.top-link-ou {
+  --hub-rim: rgba(34, 211, 238, 0.55);
+  --hub-glow: rgba(34, 211, 238, 0.25);
+  --hub-live: #22d3ee;
+  --hub-live-2: #a5f3fc;
+  --hub-live-speed: 4s;
+}
+.top-link-sched {
+  --hub-rim: rgba(139, 92, 246, 0.55);
+  --hub-glow: rgba(139, 92, 246, 0.22);
+  --hub-live: #8b5cf6;
+  --hub-live-2: #c4b5fd;
+  --hub-live-speed: 4.3s;
+}
+.top-link-res {
+  --hub-rim: rgba(45, 212, 191, 0.55);
+  --hub-glow: rgba(45, 212, 191, 0.22);
+  --hub-live: #2dd4bf;
+  --hub-live-2: #99f6e4;
+  --hub-live-speed: 4.6s;
+}
+.top-link-dash,
+.guest-primary-link.top-link {
+  --hub-rim: rgba(251, 191, 36, 0.55);
+  --hub-glow: rgba(251, 191, 36, 0.22);
+  --hub-live: #fbbf24;
+  --hub-live-2: #fde68a;
+  --hub-live-speed: 4.8s;
+}
+.announce-welcome {
+  --hub-rim: rgba(34, 211, 238, 0.4);
+  --hub-glow: rgba(34, 211, 238, 0.15);
+  --hub-live: #22d3ee;
+  --hub-live-2: #67e8f9;
+  --hub-live-speed: 7s;
+}
+.hero-side.glass {
+  --hub-rim: rgba(96, 165, 250, 0.4);
+  --hub-glow: rgba(96, 165, 250, 0.15);
+  --hub-live: #60a5fa;
+  --hub-live-2: #93c5fd;
+  --hub-live-speed: 8s;
+}
+
+/* Traveling energy streak — FULL perimeter (mask keeps it on border only) */
+.hero-main.glass::after,
+.admin-pin.is-visible::after,
+.cm-primary-link::after,
+.guest-primary-link.top-link::after,
+.announce-welcome::after,
+.hero-side.glass::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 2px;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 10;
+  /* bright head + fading tail ~1/6 of circle */
+  background: conic-gradient(
+    from var(--hub-spin, 0deg),
+    transparent 0deg,
+    transparent 280deg,
+    color-mix(in srgb, var(--hub-live) 25%, transparent) 300deg,
+    var(--hub-live) 330deg,
+    var(--hub-live-2) 345deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: hubSpinBorder var(--hub-live-speed, 4.5s) linear infinite;
+  opacity: 1;
+  filter: drop-shadow(0 0 4px var(--hub-live));
+}
+
+/* Remove old top-only before streaks */
+.cm-primary-link::before,
+.guest-primary-link.top-link::before {
+  content: none !important;
+  display: none !important;
+}
+
+.hero-main.glass > *,
+.admin-pin.is-visible > *,
+.cm-primary-link > *,
+.guest-primary-link.top-link > *,
+.announce-welcome > *,
+.hero-side.glass > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Hover / tap — stronger glow like mockup */
+.cm-primary-link:hover,
+.guest-primary-link.top-link:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px var(--hub-rim),
+    0 0 28px var(--hub-glow),
+    0 16px 36px rgba(0, 0, 0, 0.4) !important;
+}
+.cm-primary-link:hover::after,
+.guest-primary-link.top-link:hover::after {
+  filter: drop-shadow(0 0 8px var(--hub-live));
+  animation-duration: 2.4s;
+}
+.cm-primary-link:active,
+.guest-primary-link.top-link:active {
+  transform: scale(0.97);
+  box-shadow:
+    0 0 0 1.5px var(--hub-live),
+    0 0 22px var(--hub-glow) !important;
+}
+
+/* —— MEDIUM: lower-page cards (all roles) —— */
 .today-card,
 .note-card,
 .statbox,
@@ -3674,120 +3813,14 @@ body::after {
 #vision-mission .card,
 #quick-links .linkcard,
 #reviewer-arena .arena-panel,
-.duty-item,
-.ou-feed,
-.modal-overlay .modal-panel,
 .auth-panel {
   position: relative;
   isolation: isolate;
   z-index: 0;
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.22),
+    0 10px 28px rgba(0, 0, 0, 0.28) !important;
 }
-
-/* HIGH priority streak */
-.hero-main.glass::after,
-.admin-pin.is-visible::after,
-.cm-primary-link::after,
-.guest-primary-link.top-link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 2px;
-  box-sizing: border-box;
-  pointer-events: none;
-  z-index: 8;
-  background: conic-gradient(
-    from var(--hub-spin, 0deg),
-    transparent 0deg,
-    transparent 290deg,
-    var(--hub-live-soft, rgba(34, 211, 238, 0.2)) 310deg,
-    var(--hub-live, rgba(34, 211, 238, 1)) 335deg,
-    var(--hub-live-mid, rgba(165, 243, 252, 0.65)) 348deg,
-    transparent 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: hubSpinBorder var(--hub-live-speed, 4.8s) linear infinite;
-  opacity: var(--hub-live-opacity, 0.95);
-}
-
-/* Per-card accent colors (visible to classmates AND structure for guests) */
-.hero-main.glass {
-  --hub-live: rgba(34, 211, 238, 1);
-  --hub-live-mid: rgba(125, 211, 252, 0.65);
-  --hub-live-soft: rgba(34, 211, 238, 0.18);
-  --hub-live-speed: 5.5s;
-}
-.admin-pin.is-visible {
-  --hub-live: rgba(251, 191, 36, 1);
-  --hub-live-mid: rgba(253, 230, 138, 0.65);
-  --hub-live-soft: rgba(251, 191, 36, 0.2);
-  --hub-live-speed: 6.5s;
-}
-.top-link-ou {
-  --hub-live: rgba(34, 211, 238, 1);
-  --hub-live-mid: rgba(165, 243, 252, 0.6);
-  --hub-live-soft: rgba(34, 211, 238, 0.18);
-  --hub-live-speed: 4.5s;
-}
-.top-link-sched {
-  --hub-live: rgba(129, 140, 248, 1);
-  --hub-live-mid: rgba(196, 181, 253, 0.6);
-  --hub-live-soft: rgba(129, 140, 248, 0.18);
-  --hub-live-speed: 5s;
-}
-.top-link-res {
-  --hub-live: rgba(45, 212, 191, 1);
-  --hub-live-mid: rgba(153, 246, 228, 0.6);
-  --hub-live-soft: rgba(45, 212, 191, 0.18);
-  --hub-live-speed: 5.2s;
-}
-.top-link-dash,
-.guest-primary-link.top-link {
-  --hub-live: rgba(251, 191, 36, 1);
-  --hub-live-mid: rgba(253, 230, 138, 0.55);
-  --hub-live-soft: rgba(251, 191, 36, 0.18);
-  --hub-live-speed: 5.5s;
-}
-
-/* Kill top-only ::before remnants */
-.cm-primary-link::before,
-.guest-primary-link.top-link::before {
-  content: none !important;
-  display: none !important;
-  animation: none !important;
-}
-
-.hero-main.glass > *,
-.admin-pin.is-visible > *,
-.cm-primary-link > *,
-.guest-primary-link.top-link > * {
-  position: relative;
-  z-index: 2;
-}
-
-/* Interaction */
-.cm-primary-link:hover::after,
-.guest-primary-link.top-link:hover::after,
-.cm-primary-link:focus-visible::after {
-  opacity: 1;
-  animation-duration: 2.6s;
-}
-.cm-primary-link:active::after,
-.guest-primary-link.top-link:active::after {
-  filter: brightness(1.25);
-  opacity: 1;
-}
-
-/* MEDIUM — lower sections + content (ALL roles see this) */
-.announce-welcome::after,
-.hero-side.glass::after,
 .today-card::after,
 .note-card::after,
 .statbox::after,
@@ -3806,19 +3839,19 @@ body::after {
 .auth-panel::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   border-radius: inherit;
-  padding: 1.25px;
+  padding: 1.5px;
   box-sizing: border-box;
   pointer-events: none;
-  z-index: 5;
+  z-index: 6;
   background: conic-gradient(
     from var(--hub-spin, 0deg),
     transparent 0deg,
-    transparent 300deg,
-    rgba(34, 211, 238, 0.15) 318deg,
-    rgba(34, 211, 238, 0.7) 338deg,
-    rgba(148, 163, 184, 0.25) 350deg,
+    transparent 290deg,
+    rgba(34, 211, 238, 0.2) 310deg,
+    rgba(34, 211, 238, 0.85) 335deg,
+    rgba(125, 211, 252, 0.45) 348deg,
     transparent 360deg
   );
   -webkit-mask:
@@ -3829,12 +3862,10 @@ body::after {
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   mask-composite: exclude;
-  animation: hubSpinBorder 10s linear infinite;
-  opacity: 0.55;
+  animation: hubSpinBorder 9s linear infinite;
+  opacity: 0.75;
+  filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.4));
 }
-
-.announce-welcome > *,
-.hero-side.glass > *,
 .resource-card > *,
 .note-card > *,
 .statbox > *,
@@ -3845,7 +3876,7 @@ body::after {
   z-index: 2;
 }
 
-/* Logo orbit (outer ring only) — everyone */
+/* Logo outer energy ring */
 .logo-shell {
   position: relative;
   isolation: isolate;
@@ -3853,65 +3884,60 @@ body::after {
 .logo-shell::after {
   content: "";
   position: absolute;
-  inset: -4px;
+  inset: -5px;
   border-radius: 50%;
   z-index: -1;
   pointer-events: none;
   background: conic-gradient(
     from var(--hub-spin, 0deg),
     transparent 0deg,
-    transparent 295deg,
-    rgba(34, 211, 238, 0.12) 315deg,
-    rgba(34, 211, 238, 0.9) 338deg,
-    rgba(251, 191, 36, 0.45) 350deg,
+    transparent 285deg,
+    rgba(34, 211, 238, 0.2) 305deg,
+    #22d3ee 335deg,
+    rgba(251, 191, 36, 0.55) 350deg,
     transparent 360deg
   );
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
-  animation: hubSpinBorder 7s linear infinite;
-  opacity: 0.95;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 1px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 1px));
+  animation: hubSpinBorder 6s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.45));
 }
 
-/* Title sweep */
+/* Title */
 .hero-title {
-  background-image: linear-gradient(100deg, #f4f8fc 0%, #f4f8fc 38%, #a5f3fc 50%, #f4f8fc 62%, #f4f8fc 100%) !important;
+  background-image: linear-gradient(100deg, #f8fafc 0%, #f8fafc 36%, #a5f3fc 50%, #f8fafc 64%, #f8fafc 100%) !important;
   background-size: 220% 100% !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  animation: hubTitleSweep 7.5s ease-in-out infinite;
+  animation: hubTitleSweep 7s ease-in-out infinite;
 }
 .hero-title-accent {
-  background-image: linear-gradient(100deg, #5eead4 0%, #5eead4 38%, #ecfeff 50%, #5eead4 62%, #5eead4 100%) !important;
+  background-image: linear-gradient(100deg, #5eead4 0%, #5eead4 36%, #ecfeff 50%, #5eead4 64%, #5eead4 100%) !important;
   background-size: 220% 100% !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  animation: hubTitleSweep 7.5s ease-in-out infinite 0.3s;
+  animation: hubTitleSweep 7s ease-in-out infinite 0.25s;
 }
 
-.cm-primary-link .tl-icon {
-  animation: hubIconPulse 4s ease-in-out infinite;
-}
-
-/* SCREEN EDGE — full outer perimeter (all four sides), thin & continuous */
+/* SCREEN EDGE full perimeter frame */
 .hub-page-frame {
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 950;
+  z-index: 960;
   padding: 2px;
   box-sizing: border-box;
-  border-radius: 0;
   background: conic-gradient(
     from var(--hub-spin, 0deg),
     transparent 0deg,
-    transparent 295deg,
-    rgba(34, 211, 238, 0.12) 315deg,
-    rgba(56, 189, 248, 0.75) 335deg,
-    rgba(167, 139, 250, 0.35) 348deg,
+    transparent 285deg,
+    rgba(34, 211, 238, 0.15) 305deg,
+    rgba(56, 189, 248, 0.85) 332deg,
+    rgba(167, 139, 250, 0.4) 348deg,
     transparent 360deg
   );
   -webkit-mask:
@@ -3922,8 +3948,9 @@ body::after {
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   mask-composite: exclude;
-  animation: hubSpinBorder 14s linear infinite;
-  opacity: 0.7;
+  animation: hubSpinBorder 12s linear infinite;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.25));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3952,13 +3979,12 @@ body::after {
   .logo-shell::after,
   .hub-page-frame,
   .hero-title,
-  .hero-title-accent,
-  .cm-primary-link .tl-icon {
+  .hero-title-accent {
     animation: none !important;
   }
   .hero-title {
-    color: #f4f8fc !important;
-    -webkit-text-fill-color: #f4f8fc !important;
+    color: #f8fafc !important;
+    -webkit-text-fill-color: #f8fafc !important;
     background: none !important;
   }
   .hero-title-accent {
