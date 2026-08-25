@@ -3612,9 +3612,10 @@ body.role-admin .cm-primary-link:active {
 
 
 
+
 /* =====================================================================
-   PERIMETER ENERGY v8 — border-only streak (NO background lines)
-   Streak travels full perimeter: top → right → bottom → left → loop
+   PERIMETER ENERGY v9 — full-border loading streak for ALL visitors
+   top→right→bottom→left; NO background spinning; guests included
    ===================================================================== */
 
 @property --hub-spin {
@@ -3628,16 +3629,16 @@ body.role-admin .cm-primary-link:active {
 }
 
 @keyframes hubTitleSweep {
-  0% { background-position: 120% 50%; }
-  100% { background-position: -20% 50%; }
+  0% { background-position: 140% 50%; }
+  100% { background-position: -40% 50%; }
 }
 
 @keyframes hubIconPulse {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.15); }
 }
 
-/* Kill ANY page-background line effects from earlier experiments */
+/* Absolutely no mid-page / diagonal background motion */
 body::before,
 body::after {
   content: none !important;
@@ -3645,127 +3646,17 @@ body::after {
   animation: none !important;
   background: none !important;
 }
+.matrix-bg,
 .grid-bg {
   animation: none !important;
 }
 
-/* —— HIGH: hero, pin, shortcuts —— */
+/* Shared perimeter recipe (EDGE ONLY via mask) */
+.hub-perimeter,
 .hero-main.glass,
 .admin-pin.is-visible,
-body.role-classmate .cm-primary-link,
-body.role-admin .cm-primary-link {
-  position: relative;
-  isolation: isolate;
-  z-index: 0;
-  --hub-live: rgba(34, 211, 238, 0.95);
-  --hub-live-mid: rgba(165, 243, 252, 0.5);
-  --hub-live-soft: rgba(34, 211, 238, 0.12);
-  --hub-live-speed: 5.5s;
-  --hub-live-opacity: 0.9;
-}
-
-.admin-pin.is-visible {
-  --hub-live: rgba(251, 191, 36, 0.95);
-  --hub-live-mid: rgba(253, 230, 138, 0.55);
-  --hub-live-soft: rgba(251, 191, 36, 0.15);
-  --hub-live-speed: 7s;
-}
-
-body.role-classmate .top-link-ou,
-body.role-admin .top-link-ou {
-  --hub-live: rgba(34, 211, 238, 0.95);
-  --hub-live-mid: rgba(165, 243, 252, 0.5);
-  --hub-live-soft: rgba(34, 211, 238, 0.12);
-  --hub-live-speed: 5s;
-}
-body.role-classmate .top-link-sched,
-body.role-admin .top-link-sched {
-  --hub-live: rgba(129, 140, 248, 0.95);
-  --hub-live-mid: rgba(196, 181, 253, 0.5);
-  --hub-live-soft: rgba(129, 140, 248, 0.12);
-  --hub-live-speed: 5.6s;
-}
-body.role-classmate .top-link-res,
-body.role-admin .top-link-res {
-  --hub-live: rgba(45, 212, 191, 0.95);
-  --hub-live-mid: rgba(153, 246, 228, 0.5);
-  --hub-live-soft: rgba(45, 212, 191, 0.12);
-  --hub-live-speed: 6s;
-}
-body.role-classmate .top-link-dash,
-body.role-admin .top-link-dash {
-  --hub-live: rgba(251, 191, 36, 0.95);
-  --hub-live-mid: rgba(253, 230, 138, 0.5);
-  --hub-live-soft: rgba(251, 191, 36, 0.12);
-  --hub-live-speed: 6.4s;
-}
-
-/* Full perimeter via masked conic gradient (EDGE ONLY) */
-.hero-main.glass::after,
-.admin-pin.is-visible::after,
-body.role-classmate .cm-primary-link::after,
-body.role-admin .cm-primary-link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.5px;
-  box-sizing: border-box;
-  pointer-events: none;
-  z-index: 6;
-  background: conic-gradient(
-    from var(--hub-spin, 0deg),
-    transparent 0deg,
-    transparent 300deg,
-    var(--hub-live-soft) 318deg,
-    var(--hub-live) 338deg,
-    var(--hub-live-mid) 348deg,
-    transparent 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: hubSpinBorder var(--hub-live-speed, 5.5s) linear infinite;
-  opacity: var(--hub-live-opacity, 0.9);
-}
-
-/* Remove old top-only ::before streaks on shortcuts */
-body.role-classmate .cm-primary-link::before,
-body.role-admin .cm-primary-link::before {
-  content: none !important;
-  display: none !important;
-  animation: none !important;
-}
-
-/* Content stays above border effect */
-.hero-main.glass > *,
-.admin-pin.is-visible > *,
-body.role-classmate .cm-primary-link > *,
-body.role-admin .cm-primary-link > * {
-  position: relative;
-  z-index: 2;
-}
-
-/* Hover / active: brighter, faster perimeter */
-body.role-classmate .cm-primary-link:hover::after,
-body.role-admin .cm-primary-link:hover::after,
-body.role-classmate .cm-primary-link:focus-visible::after,
-body.role-admin .cm-primary-link:focus-visible::after {
-  opacity: 1;
-  animation-duration: 3s;
-}
-body.role-classmate .cm-primary-link:active::after,
-body.role-admin .cm-primary-link:active::after {
-  opacity: 1;
-  filter: brightness(1.2);
-}
-
-/* —— MEDIUM: welcome, side panel, content cards (slower, softer) —— */
+.cm-primary-link,
+.guest-primary-link.top-link,
 .announce-welcome,
 .hero-side.glass,
 .today-card,
@@ -3782,12 +3673,119 @@ body.role-admin .cm-primary-link:active::after {
 #freedom-wall .card,
 #vision-mission .card,
 #quick-links .linkcard,
-#reviewer-arena .arena-panel {
+#reviewer-arena .arena-panel,
+.duty-item,
+.ou-feed,
+.modal-overlay .modal-panel,
+.auth-panel {
   position: relative;
   isolation: isolate;
   z-index: 0;
 }
 
+/* HIGH priority streak */
+.hero-main.glass::after,
+.admin-pin.is-visible::after,
+.cm-primary-link::after,
+.guest-primary-link.top-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 8;
+  background: conic-gradient(
+    from var(--hub-spin, 0deg),
+    transparent 0deg,
+    transparent 290deg,
+    var(--hub-live-soft, rgba(34, 211, 238, 0.2)) 310deg,
+    var(--hub-live, rgba(34, 211, 238, 1)) 335deg,
+    var(--hub-live-mid, rgba(165, 243, 252, 0.65)) 348deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: hubSpinBorder var(--hub-live-speed, 4.8s) linear infinite;
+  opacity: var(--hub-live-opacity, 0.95);
+}
+
+/* Per-card accent colors (visible to classmates AND structure for guests) */
+.hero-main.glass {
+  --hub-live: rgba(34, 211, 238, 1);
+  --hub-live-mid: rgba(125, 211, 252, 0.65);
+  --hub-live-soft: rgba(34, 211, 238, 0.18);
+  --hub-live-speed: 5.5s;
+}
+.admin-pin.is-visible {
+  --hub-live: rgba(251, 191, 36, 1);
+  --hub-live-mid: rgba(253, 230, 138, 0.65);
+  --hub-live-soft: rgba(251, 191, 36, 0.2);
+  --hub-live-speed: 6.5s;
+}
+.top-link-ou {
+  --hub-live: rgba(34, 211, 238, 1);
+  --hub-live-mid: rgba(165, 243, 252, 0.6);
+  --hub-live-soft: rgba(34, 211, 238, 0.18);
+  --hub-live-speed: 4.5s;
+}
+.top-link-sched {
+  --hub-live: rgba(129, 140, 248, 1);
+  --hub-live-mid: rgba(196, 181, 253, 0.6);
+  --hub-live-soft: rgba(129, 140, 248, 0.18);
+  --hub-live-speed: 5s;
+}
+.top-link-res {
+  --hub-live: rgba(45, 212, 191, 1);
+  --hub-live-mid: rgba(153, 246, 228, 0.6);
+  --hub-live-soft: rgba(45, 212, 191, 0.18);
+  --hub-live-speed: 5.2s;
+}
+.top-link-dash,
+.guest-primary-link.top-link {
+  --hub-live: rgba(251, 191, 36, 1);
+  --hub-live-mid: rgba(253, 230, 138, 0.55);
+  --hub-live-soft: rgba(251, 191, 36, 0.18);
+  --hub-live-speed: 5.5s;
+}
+
+/* Kill top-only ::before remnants */
+.cm-primary-link::before,
+.guest-primary-link.top-link::before {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+}
+
+.hero-main.glass > *,
+.admin-pin.is-visible > *,
+.cm-primary-link > *,
+.guest-primary-link.top-link > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Interaction */
+.cm-primary-link:hover::after,
+.guest-primary-link.top-link:hover::after,
+.cm-primary-link:focus-visible::after {
+  opacity: 1;
+  animation-duration: 2.6s;
+}
+.cm-primary-link:active::after,
+.guest-primary-link.top-link:active::after {
+  filter: brightness(1.25);
+  opacity: 1;
+}
+
+/* MEDIUM — lower sections + content (ALL roles see this) */
 .announce-welcome::after,
 .hero-side.glass::after,
 .today-card::after,
@@ -3803,22 +3801,24 @@ body.role-admin .cm-primary-link:active::after {
 #freshmen .card::after,
 #freedom-wall .card::after,
 #vision-mission .card::after,
-#quick-links .linkcard::after {
+#quick-links .linkcard::after,
+#reviewer-arena .arena-panel::after,
+.auth-panel::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1px;
+  padding: 1.25px;
   box-sizing: border-box;
   pointer-events: none;
-  z-index: 4;
+  z-index: 5;
   background: conic-gradient(
     from var(--hub-spin, 0deg),
     transparent 0deg,
-    transparent 310deg,
-    rgba(34, 211, 238, 0.1) 325deg,
-    rgba(34, 211, 238, 0.5) 340deg,
-    rgba(148, 163, 184, 0.2) 350deg,
+    transparent 300deg,
+    rgba(34, 211, 238, 0.15) 318deg,
+    rgba(34, 211, 238, 0.7) 338deg,
+    rgba(148, 163, 184, 0.25) 350deg,
     transparent 360deg
   );
   -webkit-mask:
@@ -3829,8 +3829,8 @@ body.role-admin .cm-primary-link:active::after {
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   mask-composite: exclude;
-  animation: hubSpinBorder 12s linear infinite;
-  opacity: 0.4;
+  animation: hubSpinBorder 10s linear infinite;
+  opacity: 0.55;
 }
 
 .announce-welcome > *,
@@ -3839,12 +3839,13 @@ body.role-admin .cm-primary-link:active::after {
 .note-card > *,
 .statbox > *,
 .arena-panel > *,
-.card.pad > * {
+.card.pad > *,
+.auth-panel > * {
   position: relative;
   z-index: 2;
 }
 
-/* —— Logo: orbit on OUTER ring only —— */
+/* Logo orbit (outer ring only) — everyone */
 .logo-shell {
   position: relative;
   isolation: isolate;
@@ -3859,58 +3860,58 @@ body.role-admin .cm-primary-link:active::after {
   background: conic-gradient(
     from var(--hub-spin, 0deg),
     transparent 0deg,
-    transparent 300deg,
-    rgba(34, 211, 238, 0.1) 320deg,
-    rgba(34, 211, 238, 0.85) 340deg,
-    rgba(251, 191, 36, 0.4) 350deg,
+    transparent 295deg,
+    rgba(34, 211, 238, 0.12) 315deg,
+    rgba(34, 211, 238, 0.9) 338deg,
+    rgba(251, 191, 36, 0.45) 350deg,
     transparent 360deg
   );
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
-  animation: hubSpinBorder 8s linear infinite;
-  opacity: 0.9;
+  animation: hubSpinBorder 7s linear infinite;
+  opacity: 0.95;
 }
 
-/* Title: soft sweep (text only) */
+/* Title sweep */
 .hero-title {
-  background-image: linear-gradient(100deg, #f4f8fc 0%, #f4f8fc 40%, #a5f3fc 50%, #f4f8fc 60%, #f4f8fc 100%) !important;
+  background-image: linear-gradient(100deg, #f4f8fc 0%, #f4f8fc 38%, #a5f3fc 50%, #f4f8fc 62%, #f4f8fc 100%) !important;
   background-size: 220% 100% !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  animation: hubTitleSweep 8s ease-in-out infinite;
+  animation: hubTitleSweep 7.5s ease-in-out infinite;
 }
 .hero-title-accent {
-  background-image: linear-gradient(100deg, #5eead4 0%, #5eead4 40%, #ecfeff 50%, #5eead4 60%, #5eead4 100%) !important;
+  background-image: linear-gradient(100deg, #5eead4 0%, #5eead4 38%, #ecfeff 50%, #5eead4 62%, #5eead4 100%) !important;
   background-size: 220% 100% !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  animation: hubTitleSweep 8s ease-in-out infinite;
-  animation-delay: 0.35s;
+  animation: hubTitleSweep 7.5s ease-in-out infinite 0.3s;
 }
 
 .cm-primary-link .tl-icon {
   animation: hubIconPulse 4s ease-in-out infinite;
 }
 
-/* —— Outer viewport frame (thin, edge only, not mid-page lines) —— */
+/* SCREEN EDGE — full outer perimeter (all four sides), thin & continuous */
 .hub-page-frame {
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 900;
-  padding: 1px;
+  z-index: 950;
+  padding: 2px;
   box-sizing: border-box;
+  border-radius: 0;
   background: conic-gradient(
     from var(--hub-spin, 0deg),
     transparent 0deg,
-    transparent 310deg,
-    rgba(34, 211, 238, 0.06) 325deg,
-    rgba(34, 211, 238, 0.35) 340deg,
-    rgba(148, 163, 184, 0.12) 350deg,
+    transparent 295deg,
+    rgba(34, 211, 238, 0.12) 315deg,
+    rgba(56, 189, 248, 0.75) 335deg,
+    rgba(167, 139, 250, 0.35) 348deg,
     transparent 360deg
   );
   -webkit-mask:
@@ -3921,15 +3922,15 @@ body.role-admin .cm-primary-link:active::after {
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   mask-composite: exclude;
-  animation: hubSpinBorder 20s linear infinite;
-  opacity: 0.45;
+  animation: hubSpinBorder 14s linear infinite;
+  opacity: 0.7;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-main.glass::after,
   .admin-pin.is-visible::after,
-  body.role-classmate .cm-primary-link::after,
-  body.role-admin .cm-primary-link::after,
+  .cm-primary-link::after,
+  .guest-primary-link.top-link::after,
   .announce-welcome::after,
   .hero-side.glass::after,
   .today-card::after,
@@ -3946,6 +3947,8 @@ body.role-admin .cm-primary-link:active::after {
   #freedom-wall .card::after,
   #vision-mission .card::after,
   #quick-links .linkcard::after,
+  #reviewer-arena .arena-panel::after,
+  .auth-panel::after,
   .logo-shell::after,
   .hub-page-frame,
   .hero-title,
