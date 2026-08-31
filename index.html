@@ -1341,7 +1341,7 @@ body.boss-active #gameView.active {
 .session-chip.is-guest {
   border-color: rgba(255,210,125,0.35); background: rgba(255,210,125,0.1); color: #ffe6b0;
 }
-.session-chip is-classmate, .session-chip.is-classmate {
+.session-chip.is-classmate {
   border-color: rgba(100,255,218,0.4); color: #eafffb;
 }
 .guest-banner {
@@ -1409,6 +1409,66 @@ body.role-guest a.btn.locked-for-guest {
 }
 body.role-guest a.linkcard.locked-for-guest {
   padding-bottom: 1.6rem;
+}
+
+/* Visitor view: read-only classmate-style browsing without classmate writes. */
+body.role-visitor .locked-for-guest,
+body.role-visitor a.locked-for-guest {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  opacity: 0.42 !important;
+  filter: grayscale(0.25);
+  position: relative;
+}
+body.role-visitor a.locked-for-guest::after {
+  content: "🔒 Classmates only";
+  position: absolute;
+  left: 50%;
+  bottom: 0.35rem;
+  transform: translateX(-50%);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #ffd27d;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+body.role-visitor a.top-link.locked-for-guest,
+body.role-visitor a.btn.locked-for-guest,
+body.role-visitor a.linkcard.locked-for-guest {
+  padding-bottom: 1.35rem;
+}
+body.role-visitor .top-link-dash {
+  display: none !important;
+}
+body.role-visitor .ou-react-row,
+body.role-visitor [data-ou-react],
+body.role-visitor .ou-react-btn,
+body.role-visitor .ou-thread-compose {
+  pointer-events: none !important;
+}
+body.role-visitor .ou-thread-compose {
+  display: none !important;
+}
+body.role-visitor #resourceRequestForm,
+body.role-visitor #resourceRequestForm input,
+body.role-visitor #resourceRequestForm textarea,
+body.role-visitor #resourceRequestForm button,
+body.role-visitor .request-lock-card {
+  pointer-events: none !important;
+  opacity: 0.55;
+}
+body.role-visitor #resourceRequestForm {
+  position: relative;
+}
+body.role-visitor #resourceRequestForm::after {
+  content: "Visitor mode · view only";
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--gold);
+  font-size: 0.74rem;
+  font-weight: 800;
 }
 body.role-guest .run-type-card[data-run-type="ranked"],
 body.role-guest .run-type-card[data-run-type="daily"] {
