@@ -484,18 +484,44 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
       navPw.hidden = !(authState.role === "classmate" || authState.role === "admin");
     }
 
-    // Lock resource request form for browse-only guests (no Guest Pass)
+    // Lock browse-only surfaces for guests without a pass AND all visitors.
+    // Keep the UI and the submit handler in sync so a visitor cannot write by
+    // activating a control through keyboard/script even when CSS is bypassed.
     const reqForm = $("resourceRequestForm");
     const browseOnlyGuest = authState.role === "guest" && !authState.guestPlayAllowed;
+    const readOnlyVisitor = authState.role === "visitor";
+    const requestLocked = browseOnlyGuest || readOnlyVisitor;
     if (reqForm) {
       const fields = reqForm.querySelectorAll("input, textarea, button");
       fields.forEach((el) => {
-        el.disabled = browseOnlyGuest;
-        if (browseOnlyGuest) el.setAttribute("tabindex", "-1");
+        el.disabled = requestLocked;
+        if (requestLocked) el.setAttribute("tabindex", "-1");
         else el.removeAttribute("tabindex");
       });
-      reqForm.setAttribute("aria-disabled", browseOnlyGuest ? "true" : "false");
+      reqForm.setAttribute("aria-disabled", requestLocked ? "true" : "false");
     }
+
+    // Classmate-only links must also be locked for visitor accounts.
+    // Save their original href so normal classmate/admin sessions restore it.
+    document.querySelectorAll(".locked-for-guest").forEach((el) => {
+      const locked = authState.role === "guest" || authState.role === "visitor";
+      if (locked) {
+        if (el.dataset.originalHref == null && el.hasAttribute("href")) {
+          el.dataset.originalHref = el.getAttribute("href") || "";
+        }
+        el.classList.add("is-role-locked");
+        el.setAttribute("aria-disabled", "true");
+        el.setAttribute("tabindex", "-1");
+      } else {
+        el.classList.remove("is-role-locked");
+        el.removeAttribute("aria-disabled");
+        if (el.dataset.originalHref != null) {
+          el.setAttribute("href", el.dataset.originalHref);
+          delete el.dataset.originalHref;
+        }
+        if (el.dataset.wasTabindex == null) el.removeAttribute("tabindex");
+      }
+    });
 
     const guestBanner = $("guestBanner");
     if (guestBanner) {
@@ -7684,6 +7710,12 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
       event.preventDefault();
       const status = $("reqStatus");
       // Guests without Guest Pass cannot submit resource requests
+      if (authState.role === "visitor") {
+        if (status) {
+          status.textContent = "Visitor · view only — hindi pwede mag-request. Sign in as classmate para makapag-send.";
+        }
+        return;
+      }
       if (authState.role === "guest" && !authState.guestPlayAllowed) {
         if (status) {
           status.textContent = "Guest · Browse only — hindi pwede mag-request. Sign in as classmate o gumamit ng Guest Pass.";
