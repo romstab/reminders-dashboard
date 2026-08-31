@@ -1341,7 +1341,7 @@ body.boss-active #gameView.active {
 .session-chip.is-guest {
   border-color: rgba(255,210,125,0.35); background: rgba(255,210,125,0.1); color: #ffe6b0;
 }
-.session-chip.is-classmate {
+.session-chip is-classmate, .session-chip.is-classmate {
   border-color: rgba(100,255,218,0.4); color: #eafffb;
 }
 .guest-banner {
@@ -1409,66 +1409,6 @@ body.role-guest a.btn.locked-for-guest {
 }
 body.role-guest a.linkcard.locked-for-guest {
   padding-bottom: 1.6rem;
-}
-
-/* Visitor view: read-only classmate-style browsing without classmate writes. */
-body.role-visitor .locked-for-guest,
-body.role-visitor a.locked-for-guest {
-  pointer-events: none !important;
-  cursor: not-allowed !important;
-  opacity: 0.42 !important;
-  filter: grayscale(0.25);
-  position: relative;
-}
-body.role-visitor a.locked-for-guest::after {
-  content: "🔒 Classmates only";
-  position: absolute;
-  left: 50%;
-  bottom: 0.35rem;
-  transform: translateX(-50%);
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: #ffd27d;
-  white-space: nowrap;
-  pointer-events: none;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-}
-body.role-visitor a.top-link.locked-for-guest,
-body.role-visitor a.btn.locked-for-guest,
-body.role-visitor a.linkcard.locked-for-guest {
-  padding-bottom: 1.35rem;
-}
-body.role-visitor .top-link-dash {
-  display: none !important;
-}
-body.role-visitor .ou-react-row,
-body.role-visitor [data-ou-react],
-body.role-visitor .ou-react-btn,
-body.role-visitor .ou-thread-compose {
-  pointer-events: none !important;
-}
-body.role-visitor .ou-thread-compose {
-  display: none !important;
-}
-body.role-visitor #resourceRequestForm,
-body.role-visitor #resourceRequestForm input,
-body.role-visitor #resourceRequestForm textarea,
-body.role-visitor #resourceRequestForm button,
-body.role-visitor .request-lock-card {
-  pointer-events: none !important;
-  opacity: 0.55;
-}
-body.role-visitor #resourceRequestForm {
-  position: relative;
-}
-body.role-visitor #resourceRequestForm::after {
-  content: "Visitor mode · view only";
-  display: block;
-  margin-top: 0.55rem;
-  color: var(--gold);
-  font-size: 0.74rem;
-  font-weight: 800;
 }
 body.role-guest .run-type-card[data-run-type="ranked"],
 body.role-guest .run-type-card[data-run-type="daily"] {
@@ -4126,6 +4066,200 @@ body::before, body::after {
 }
 
 </style>
+
+<style id="rst-css-stability-fix-v1">
+/* =====================================================================
+   RST CSS STABILITY PATCH v1
+   Fixes mobile card-content occlusion caused by animated pseudo-elements.
+   Also keeps anchor jumps clear of the variable-height sticky navbar.
+   ===================================================================== */
+
+/* The animated perimeter layer must NEVER sit above readable/interactive
+   content.  Several cards have their own ::before/::after layers, so every
+   direct child of those hosts needs an explicit content stacking level. */
+.hero-main.glass > *,
+.hero-side.glass > *,
+.admin-pin.is-visible > *,
+.cm-primary-link > *,
+.guest-primary-link.top-link > *,
+.announce-welcome > *,
+.today-card > *,
+.note-card > *,
+.statbox > *,
+.resource-card > *,
+.arena-panel > *,
+.padlet-box > *,
+.card.pad > *,
+#resources .card > *,
+#schedule .card > *,
+#officers .card > *,
+#freshmen .card > *,
+#freedom-wall .card > *,
+#freedom-wall .padlet-box > *,
+#vision-mission .card > *,
+#quick-links .linkcard > *,
+#reviewer-arena .arena-panel > *,
+.auth-panel > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Embedded services such as Padlet must remain above the card's decorative
+   overlay. */
+.padlet-box > .padlet-embed,
+.padlet-embed > iframe {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+/* Never let the decorative card layer intercept clicks, scrolling, text
+   selection, or iframe interaction. */
+.today-card::before,
+.today-card::after,
+.note-card::before,
+.note-card::after,
+.statbox::before,
+.statbox::after,
+.resource-card::before,
+.resource-card::after,
+.arena-panel::before,
+.arena-panel::after,
+.padlet-box::before,
+.padlet-box::after,
+.card.pad::before,
+.card.pad::after,
+#resources .card::before,
+#resources .card::after,
+#schedule .card::before,
+#schedule .card::after,
+#officers .card::before,
+#officers .card::after,
+#freshmen .card::before,
+#freshmen .card::after,
+#freedom-wall .card::before,
+#freedom-wall .card::after,
+#freedom-wall .padlet-box::before,
+#freedom-wall .padlet-box::after,
+#vision-mission .card::before,
+#vision-mission .card::after,
+#quick-links .linkcard::before,
+#quick-links .linkcard::after,
+#reviewer-arena .arena-panel::before,
+#reviewer-arena .arena-panel::after,
+.auth-panel::before,
+.auth-panel::after {
+  pointer-events: none !important;
+}
+
+/* Sticky navigation changes height between Guest/Classmate/Admin states.
+   The old 4.5rem offset was too small and caused anchor targets to appear
+   underneath the navbar on phones. */
+main section,
+header[id] {
+  scroll-margin-top: clamp(8rem, 25vh, 12rem) !important;
+}
+
+body.role-classmate #section-status.menu-revealed,
+body.role-admin #section-status.menu-revealed,
+body.role-classmate #vision-mission.menu-revealed,
+body.role-admin #vision-mission.menu-revealed,
+body.role-classmate #officers.menu-revealed,
+body.role-admin #officers.menu-revealed,
+body.role-classmate #freshmen.menu-revealed,
+body.role-admin #freshmen.menu-revealed,
+body.role-classmate #quick-links.menu-revealed,
+body.role-admin #quick-links.menu-revealed {
+  scroll-margin-top: clamp(8rem, 25vh, 12rem) !important;
+}
+
+/* Correct the malformed legacy selector so the classmate session chip is
+   styled consistently. */
+.session-chip.is-classmate {
+  border-color: rgba(100,255,218,0.4) !important;
+  color: #eafffb !important;
+}
+
+/* Keep long text inside compact mobile cards instead of forcing horizontal
+   overflow. */
+.linkcard,
+.note-card,
+.statbox,
+.resource-card,
+.today-card,
+.arena-panel,
+.padlet-box,
+.ou-top-board,
+.announce-welcome {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The embedded Padlet already owns its scrolling; avoid a second accidental
+   horizontal scrollbar from the surrounding card. */
+.padlet-embed,
+.padlet-embed iframe {
+  max-width: 100% !important;
+}
+
+@media (max-width: 639px) {
+  /* Give the sticky navbar a predictable stacking context on Android Chrome. */
+  .nav {
+    isolation: isolate;
+  }
+
+  /* Prevent tiny-width flex items from forcing the page wider than the
+     viewport when a role-specific button is revealed. */
+  .nav-inner,
+  .brand,
+  .brand-copy {
+    min-width: 0;
+  }
+
+  .brand-copy strong,
+  .brand-copy span {
+    max-width: 100%;
+  }
+
+  .section-title {
+    align-items: flex-start;
+  }
+
+  .section-title h2,
+  .section-title span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Preserve the visual border but stop expensive perimeter animation. */
+  .hero-main.glass::before,
+  .hero-side.glass::before,
+  .admin-pin.is-visible::before,
+  .cm-primary-link::before,
+  .guest-primary-link.top-link::before,
+  .announce-welcome::before,
+  .today-card::before,
+  .note-card::before,
+  .statbox::before,
+  .resource-card::before,
+  .arena-panel::before,
+  .padlet-box::before,
+  .card.pad::before,
+  #resources .card::before,
+  #schedule .card::before,
+  #officers .card::before,
+  #freshmen .card::before,
+  #freedom-wall .card::before,
+  #freedom-wall .padlet-box::before,
+  #vision-mission .card::before,
+  #quick-links .linkcard::before,
+  #reviewer-arena .arena-panel::before,
+  .auth-panel::before {
+    animation: none !important;
+  }
+}
+</style>
 </head>
 <body>
   <div class="hub-page-frame" aria-hidden="true"></div>
@@ -5182,3 +5316,4 @@ body::before, body::after {
 
 </body>
 </html>
+
