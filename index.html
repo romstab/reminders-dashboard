@@ -4065,200 +4065,118 @@ body::before, body::after {
   }
 }
 
-</style>
 
-<style id="rst-css-stability-fix-v1">
+
 /* =====================================================================
-   RST CSS STABILITY PATCH v1
-   Fixes mobile card-content occlusion caused by animated pseudo-elements.
-   Also keeps anchor jumps clear of the variable-height sticky navbar.
+   GUEST SHORTCUT FIX v12
+   The guest strip is intentionally simple/readable.  Do not let the
+   perimeter-energy pseudo layers paint a dark surface over these links.
+   Locked links stay visibly locked instead of becoming unreadable.
    ===================================================================== */
-
-/* The animated perimeter layer must NEVER sit above readable/interactive
-   content.  Several cards have their own ::before/::after layers, so every
-   direct child of those hosts needs an explicit content stacking level. */
-.hero-main.glass > *,
-.hero-side.glass > *,
-.admin-pin.is-visible > *,
-.cm-primary-link > *,
-.guest-primary-link.top-link > *,
-.announce-welcome > *,
-.today-card > *,
-.note-card > *,
-.statbox > *,
-.resource-card > *,
-.arena-panel > *,
-.padlet-box > *,
-.card.pad > *,
-#resources .card > *,
-#schedule .card > *,
-#officers .card > *,
-#freshmen .card > *,
-#freedom-wall .card > *,
-#freedom-wall .padlet-box > *,
-#vision-mission .card > *,
-#quick-links .linkcard > *,
-#reviewer-arena .arena-panel > *,
-.auth-panel > * {
+body.role-guest .guest-primary-link.top-link {
   position: relative !important;
-  z-index: 2 !important;
+  isolation: isolate !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 64px !important;
+  padding: 0.85rem 0.7rem !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  background: linear-gradient(145deg, rgba(18, 35, 58, 0.96), rgba(8, 18, 34, 0.98)) !important;
+  border: 1px solid rgba(100, 255, 218, 0.30) !important;
+  color: #f1f5f9 !important;
+  font-size: 0.82rem !important;
+  font-weight: 850 !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.05) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Embedded services such as Padlet must remain above the card's decorative
-   overlay. */
-.padlet-box > .padlet-embed,
-.padlet-embed > iframe {
-  position: relative !important;
+/* Remove the rotating disc/fill from the guest shortcut anchors. */
+body.role-guest .guest-primary-link.top-link::before,
+body.role-guest .guest-primary-link.top-link::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+}
+
+body.role-guest .guest-primary-link.top-link:hover,
+body.role-guest .guest-primary-link.top-link:focus-visible {
+  transform: translateY(-1px) !important;
+  border-color: rgba(100, 255, 218, 0.62) !important;
+  background: linear-gradient(145deg, rgba(24, 48, 76, 0.98), rgba(10, 25, 44, 0.99)) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.30), 0 0 20px rgba(100,255,218,.12) !important;
+  outline: none !important;
+}
+
+body.role-guest .guest-primary-link.top-link:active {
+  transform: scale(.985) !important;
+}
+
+/* Classmates-only guest links: readable disabled state + clear lock label. */
+body.role-guest .guest-primary-link.top-link.locked-for-guest {
+  pointer-events: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: not-allowed !important;
+  padding-bottom: 1.65rem !important;
+  border-color: rgba(251, 191, 36, 0.42) !important;
+  background: linear-gradient(145deg, rgba(43, 34, 17, 0.94), rgba(18, 20, 27, 0.98)) !important;
+  color: rgba(241, 245, 249, 0.82) !important;
+}
+
+body.role-guest .guest-primary-link.top-link.locked-for-guest::after {
+  content: "🔒 Classmates only" !important;
+  display: block !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 0.42rem !important;
+  transform: translateX(-50%) !important;
+  width: max-content !important;
+  max-width: calc(100% - 0.6rem) !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  color: #ffd27d !important;
+  font-size: 0.60rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: .015em !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,.7) !important;
+  pointer-events: none !important;
   z-index: 3 !important;
 }
 
-/* Never let the decorative card layer intercept clicks, scrolling, text
-   selection, or iframe interaction. */
-.today-card::before,
-.today-card::after,
-.note-card::before,
-.note-card::after,
-.statbox::before,
-.statbox::after,
-.resource-card::before,
-.resource-card::after,
-.arena-panel::before,
-.arena-panel::after,
-.padlet-box::before,
-.padlet-box::after,
-.card.pad::before,
-.card.pad::after,
-#resources .card::before,
-#resources .card::after,
-#schedule .card::before,
-#schedule .card::after,
-#officers .card::before,
-#officers .card::after,
-#freshmen .card::before,
-#freshmen .card::after,
-#freedom-wall .card::before,
-#freedom-wall .card::after,
-#freedom-wall .padlet-box::before,
-#freedom-wall .padlet-box::after,
-#vision-mission .card::before,
-#vision-mission .card::after,
-#quick-links .linkcard::before,
-#quick-links .linkcard::after,
-#reviewer-arena .arena-panel::before,
-#reviewer-arena .arena-panel::after,
-.auth-panel::before,
-.auth-panel::after {
-  pointer-events: none !important;
+/* Public guest links get a clear accent without the heavy animated rim. */
+body.role-guest .guest-primary-link.top-link:not(.locked-for-guest) {
+  border-color: rgba(45, 212, 191, 0.42) !important;
+  background: linear-gradient(145deg, rgba(12, 43, 43, 0.97), rgba(8, 24, 32, 0.99)) !important;
+  color: #ecfeff !important;
 }
 
-/* Sticky navigation changes height between Guest/Classmate/Admin states.
-   The old 4.5rem offset was too small and caused anchor targets to appear
-   underneath the navbar on phones. */
-main section,
-header[id] {
-  scroll-margin-top: clamp(8rem, 25vh, 12rem) !important;
+/* Two-column guest strip on phones; never squeeze the labels into a
+   single unreadable line. */
+body.role-guest .top-links {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.65rem !important;
 }
 
-body.role-classmate #section-status.menu-revealed,
-body.role-admin #section-status.menu-revealed,
-body.role-classmate #vision-mission.menu-revealed,
-body.role-admin #vision-mission.menu-revealed,
-body.role-classmate #officers.menu-revealed,
-body.role-admin #officers.menu-revealed,
-body.role-classmate #freshmen.menu-revealed,
-body.role-admin #freshmen.menu-revealed,
-body.role-classmate #quick-links.menu-revealed,
-body.role-admin #quick-links.menu-revealed {
-  scroll-margin-top: clamp(8rem, 25vh, 12rem) !important;
-}
-
-/* Correct the malformed legacy selector so the classmate session chip is
-   styled consistently. */
-.session-chip.is-classmate {
-  border-color: rgba(100,255,218,0.4) !important;
-  color: #eafffb !important;
-}
-
-/* Keep long text inside compact mobile cards instead of forcing horizontal
-   overflow. */
-.linkcard,
-.note-card,
-.statbox,
-.resource-card,
-.today-card,
-.arena-panel,
-.padlet-box,
-.ou-top-board,
-.announce-welcome {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-/* The embedded Padlet already owns its scrolling; avoid a second accidental
-   horizontal scrollbar from the surrounding card. */
-.padlet-embed,
-.padlet-embed iframe {
-  max-width: 100% !important;
-}
-
-@media (max-width: 639px) {
-  /* Give the sticky navbar a predictable stacking context on Android Chrome. */
-  .nav {
-    isolation: isolate;
+@media (max-width: 360px) {
+  body.role-guest .guest-primary-link.top-link {
+    min-height: 62px !important;
+    font-size: 0.76rem !important;
+    padding-left: .45rem !important;
+    padding-right: .45rem !important;
   }
-
-  /* Prevent tiny-width flex items from forcing the page wider than the
-     viewport when a role-specific button is revealed. */
-  .nav-inner,
-  .brand,
-  .brand-copy {
-    min-width: 0;
-  }
-
-  .brand-copy strong,
-  .brand-copy span {
-    max-width: 100%;
-  }
-
-  .section-title {
-    align-items: flex-start;
-  }
-
-  .section-title h2,
-  .section-title span {
-    min-width: 0;
-    overflow-wrap: anywhere;
+  body.role-guest .guest-primary-link.top-link.locked-for-guest {
+    padding-bottom: 1.55rem !important;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  /* Preserve the visual border but stop expensive perimeter animation. */
-  .hero-main.glass::before,
-  .hero-side.glass::before,
-  .admin-pin.is-visible::before,
-  .cm-primary-link::before,
-  .guest-primary-link.top-link::before,
-  .announce-welcome::before,
-  .today-card::before,
-  .note-card::before,
-  .statbox::before,
-  .resource-card::before,
-  .arena-panel::before,
-  .padlet-box::before,
-  .card.pad::before,
-  #resources .card::before,
-  #schedule .card::before,
-  #officers .card::before,
-  #freshmen .card::before,
-  #freedom-wall .card::before,
-  #freedom-wall .padlet-box::before,
-  #vision-mission .card::before,
-  #quick-links .linkcard::before,
-  #reviewer-arena .arena-panel::before,
-  .auth-panel::before {
-    animation: none !important;
-  }
-}
 </style>
 </head>
 <body>
@@ -5316,4 +5234,3 @@ body.role-admin #quick-links.menu-revealed {
 
 </body>
 </html>
-
