@@ -399,6 +399,91 @@ table { width: 100%; border-collapse: collapse; }
 }
 .freshman b { color: var(--accent); }
 
+
+/* =========================================================
+   GEC 102 MODULE REVIEWER — temporary standalone study tool
+   IMPORTANT: this feature never touches arena score/leaderboard state.
+========================================================= */
+.gec-module-entry {
+  margin-top: 0.9rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(167,139,250,0.10), rgba(56,189,248,0.05));
+}
+.gec-module-entry .module-kicker {
+  display:block; font-size:0.7rem; font-weight:900; letter-spacing:0.1em;
+  color:#c4b5fd; text-transform:uppercase; margin-bottom:0.25rem;
+}
+.gec-module-entry h4 { margin:0; font-size:1rem; }
+.gec-module-entry p { margin:0.35rem 0 0; color:var(--muted); font-size:0.82rem; line-height:1.5; }
+.gec-module-btn {
+  width:100%; margin-top:0.65rem; min-height:46px; border-radius:13px;
+  border:1px solid rgba(167,139,250,0.42); color:var(--text);
+  background:rgba(167,139,250,0.10); font-weight:900; cursor:pointer;
+}
+.gec-module-btn:hover,.gec-module-btn:focus-visible {
+  border-color:#c4b5fd; box-shadow:0 0 22px rgba(167,139,250,0.18); transform:translateY(-1px);
+}
+.gec-module-overlay {
+  position:fixed; inset:0; z-index:1000; display:grid; place-items:center;
+  padding:max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+  background:rgba(2,6,15,0.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+}
+.gec-module-panel {
+  width:min(760px,100%); max-height:92dvh; overflow:auto; border-radius:22px;
+  border:1px solid rgba(167,139,250,0.34);
+  background:linear-gradient(160deg,rgba(10,18,38,0.98),rgba(5,12,25,0.98));
+  box-shadow:0 24px 80px rgba(0,0,0,0.58),0 0 35px rgba(167,139,250,0.10);
+  padding:1rem;
+}
+.gec-module-head { display:flex; justify-content:space-between; gap:.75rem; align-items:flex-start; }
+.gec-module-head h3 { margin:0; font-size:1.15rem; }
+.gec-module-head p { margin:.25rem 0 0; color:var(--muted); font-size:.8rem; line-height:1.45; }
+.gec-module-close {
+  flex:0 0 auto; width:40px; height:40px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05); color:var(--text); cursor:pointer; font-size:1.1rem;
+}
+.gec-module-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; margin:1rem 0 .8rem; }
+.gec-module-tab {
+  min-height:46px; padding:.55rem .4rem; border-radius:12px; border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.035); color:var(--muted); font-weight:850; cursor:pointer;
+}
+.gec-module-tab.selected { color:var(--text); border-color:rgba(167,139,250,.65); background:rgba(167,139,250,.14); }
+.gec-module-progress { display:flex; justify-content:space-between; gap:.5rem; color:var(--muted); font-size:.76rem; margin-bottom:.55rem; }
+.gec-module-bar { height:6px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden; margin-bottom:.8rem; }
+.gec-module-bar span { display:block; height:100%; width:0; background:linear-gradient(90deg,#a78bfa,#38bdf8); transition:width .2s ease; }
+.gec-module-card {
+  border:1px solid rgba(100,255,218,.16); border-radius:18px; padding:1rem;
+  background:rgba(255,255,255,.035);
+}
+.gec-module-label { font-size:.7rem; font-weight:900; letter-spacing:.08em; color:#c4b5fd; text-transform:uppercase; }
+.gec-module-question { margin:.45rem 0 .85rem; font-size:1.05rem; line-height:1.45; font-weight:800; }
+.gec-module-choices { display:grid; gap:.55rem; }
+.gec-module-choice {
+  width:100%; text-align:left; padding:.78rem .8rem; border-radius:13px;
+  border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.035);
+  color:var(--text); cursor:pointer; line-height:1.35;
+}
+.gec-module-choice:hover,.gec-module-choice:focus-visible { border-color:rgba(93,255,224,.45); }
+.gec-module-choice.correct { border-color:rgba(74,222,128,.65); background:rgba(74,222,128,.10); }
+.gec-module-choice.wrong { border-color:rgba(255,107,107,.65); background:rgba(255,107,107,.10); }
+.gec-module-feedback { min-height:2.2rem; margin:.75rem 0 0; color:var(--muted); font-size:.84rem; line-height:1.45; }
+.gec-module-next {
+  width:100%; min-height:46px; margin-top:.7rem; border:1px solid rgba(93,255,224,.34);
+  border-radius:13px; background:rgba(93,255,224,.08); color:var(--text); font-weight:900; cursor:pointer;
+}
+.gec-module-next:disabled { opacity:.45; cursor:not-allowed; }
+.gec-module-summary { text-align:center; padding:.75rem .25rem; }
+.gec-module-summary h4 { margin:.2rem 0 .35rem; font-size:1.15rem; }
+.gec-module-summary p { color:var(--muted); line-height:1.5; margin:.3rem 0; }
+.gec-module-actions { display:grid; gap:.55rem; margin-top:.8rem; }
+@media (min-width:640px) {
+  .gec-module-panel { padding:1.25rem; }
+  .gec-module-card { padding:1.25rem; }
+}
+
 /* =========================================================
    REVIEWER ARENA — mobile-first "app" experience
 ========================================================= */
@@ -4251,6 +4336,26 @@ body.role-guest .top-links {
     </div>
   </div>
 
+
+  <!-- ============ GEC 102 MODULE REVIEWER (standalone / non-ranked) ============ -->
+  <div class="gec-module-overlay" id="gecModuleReviewerOverlay" hidden>
+    <div class="gec-module-panel" role="dialog" aria-modal="true" aria-labelledby="gecModuleReviewerTitle">
+      <div class="gec-module-head">
+        <div>
+          <h3 id="gecModuleReviewerTitle">📚 GEC 102 Module Reviewer</h3>
+          <p>Modules 1.1 + 1.2 · Source-based review · This session is completely separate from Reviewer Arena scoring.</p>
+        </div>
+        <button type="button" class="gec-module-close" id="closeGecModuleReviewerBtn" aria-label="Close module reviewer">✕</button>
+      </div>
+      <div class="gec-module-tabs" id="gecModuleTabs" role="tablist" aria-label="Choose GEC 102 module">
+        <button type="button" class="gec-module-tab selected" data-gec-module="1.1" role="tab" aria-selected="true">Module 1.1</button>
+        <button type="button" class="gec-module-tab" data-gec-module="1.2" role="tab" aria-selected="false">Module 1.2</button>
+        <button type="button" class="gec-module-tab" data-gec-module="both" role="tab" aria-selected="false">1.1 + 1.2</button>
+      </div>
+      <div id="gecModuleReviewBody"></div>
+    </div>
+  </div>
+
   <!-- ============ GAME PROTOCOL MODAL (on-demand pop-up) ============ -->
   <div class="modal-overlay" id="protocolModal" hidden>
     <div class="modal-panel modal-panel--info" role="dialog" aria-modal="true" aria-labelledby="protocolModalTitle">
@@ -4942,6 +5047,14 @@ body.role-guest .top-links {
                   <p class="field-title" style="margin-top:0.85rem;">Study Rooms</p>
                   <p class="code-lab-note">Tap a subject room to jump into Ranked/Practice for that course. ITEC rooms lean into programming logic.</p>
                   <div class="study-rooms" id="studyRooms" role="group" aria-label="Study rooms"></div>
+
+
+                  <div class="gec-module-entry" aria-label="GEC 102 Module Reviewer">
+                    <span class="module-kicker">Temporary Study Tool · GEC 102</span>
+                    <h4>GEC 102 · Modules 1.1 &amp; 1.2</h4>
+                    <p>Standalone module reviewer based only on the uploaded LSPU module. Choose 1.1, 1.2, or BOTH. No score, mastery, Firebase write, or leaderboard record.</p>
+                    <button type="button" class="gec-module-btn" id="openGecModuleReviewerBtn">📚 OPEN GEC 102 MODULE REVIEWER</button>
+                  </div>
 
                   <div class="mastery-panel" id="masteryPanel" aria-label="Subject mastery">
                     <h4>Subject Mastery (this device)</h4>

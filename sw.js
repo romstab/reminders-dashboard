@@ -1,5 +1,5 @@
 /* BSCS 1-A RST Hub — lightweight service worker */
-const CACHE = "bscs1a-rst-hub-v3";
+const CACHE = "bscs1a-rst-hub-v4";
 const PRECACHE = ["./", "./index.html", "./game.js", "./logo.png", "./manifest.webmanifest"];
 
 /** Never intercept / cache these (AI API, Firebase, Google APIs) */
