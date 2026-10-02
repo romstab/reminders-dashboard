@@ -3875,47 +3875,196 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
     });
   }
 
-  /* ---------------- Binary matrix ambient background ---------------- */
-  function initMatrixBackground() {
-    const host = $("matrixBg");
-    if (!host) return;
-    // Skip ambient matrix when user prefers reduced motion
+  /* ---------------- Animated Matrix digital rain (canvas) ---------------- */
+  let matrixRainRaf = null;
+  let matrixRainRunning = false;
+  let matrixRainCtx = null;
+  let matrixRainCanvas = null;
+  let matrixDrops = null;
+  let matrixFontSize = 14;
+  let matrixCols = 0;
+  let matrixResizeTimer = null;
+  const MATRIX_CHARS =
+    "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛ";
+
+  function matrixRandomChar() {
+    return MATRIX_CHARS.charAt((Math.random() * MATRIX_CHARS.length) | 0);
+  }
+
+  function matrixPreferredReducedMotion() {
     try {
-      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        host.innerHTML = "";
-        return;
-      }
-    } catch (e) { /* ignore */ }
-
-    // Fewer columns + shorter streams on phones to cut paint/composite cost
-    const isNarrow = window.innerWidth < 640;
-    const step = isNarrow ? 42 : 28;
-    const colCount = Math.max(isNarrow ? 6 : 10, Math.min(isNarrow ? 14 : 28, Math.floor(window.innerWidth / step)));
-    const frag = document.createDocumentFragment();
-    for (let i = 0; i < colCount; i += 1) {
-      const col = document.createElement("div");
-      col.className = "matrix-col";
-      col.style.left = `${(i / colCount) * 100}%`;
-      col.style.animationDuration = `${10 + Math.random() * 12}s`;
-      col.style.animationDelay = `${Math.random() * -14}s`;
-      let stream = "";
-      const rows = (isNarrow ? 18 : 32) + Math.floor(Math.random() * (isNarrow ? 12 : 20));
-      for (let r = 0; r < rows; r += 1) {
-        stream += Math.round(Math.random()) + "\n";
-      }
-      col.textContent = stream;
-      frag.appendChild(col);
+      return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    } catch (e) {
+      return false;
     }
-    host.innerHTML = "";
-    host.appendChild(frag);
+  }
 
-    // Pause matrix animation while the tab is hidden (saves mobile CPU)
-    if (!host.dataset.visBound) {
-      host.dataset.visBound = "1";
-      document.addEventListener("visibilitychange", () => {
-        document.body.classList.toggle("hub-bg-paused", document.visibilityState !== "visible");
-      });
+  function matrixStopLoop() {
+    matrixRainRunning = false;
+    if (matrixRainRaf != null) {
+      try { cancelAnimationFrame(matrixRainRaf); } catch (e) { /* ignore */ }
+      matrixRainRaf = null;
     }
+  }
+
+  function matrixResizeCanvas() {
+    if (!matrixRainCanvas || !matrixRainCtx) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    const w = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 320);
+    const h = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 480);
+    matrixRainCanvas.width = Math.floor(w * dpr);
+    matrixRainCanvas.height = Math.floor(h * dpr);
+    matrixRainCanvas.style.width = w + "px";
+    matrixRainCanvas.style.height = h + "px";
+    matrixRainCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Density by viewport
+    if (w < 480) matrixFontSize = 13;
+    else if (w < 900) matrixFontSize = 14;
+    else matrixFontSize = 15;
+
+    matrixCols = Math.max(12, Math.floor(w / matrixFontSize));
+    // Cap columns for mobile performance
+    if (w < 480) matrixCols = Math.min(matrixCols, 28);
+    else if (w < 900) matrixCols = Math.min(matrixCols, 55);
+    else matrixCols = Math.min(matrixCols, 100);
+
+    matrixDrops = new Array(matrixCols);
+    for (let i = 0; i < matrixCols; i += 1) {
+      matrixDrops[i] = {
+        y: Math.random() * (h / matrixFontSize),
+        speed: 0.35 + Math.random() * 0.95,
+        trail: 8 + ((Math.random() * 14) | 0)
+      };
+    }
+    // Paint a near-black base so first frames aren't blank-white
+    matrixRainCtx.fillStyle = "rgba(4, 10, 20, 1)";
+    matrixRainCtx.fillRect(0, 0, w, h);
+  }
+
+  function matrixDrawFrame() {
+    if (!matrixRainRunning || !matrixRainCtx || !matrixRainCanvas || !matrixDrops) return;
+    const w = window.innerWidth || 320;
+    const h = window.innerHeight || 480;
+    const ctx = matrixRainCtx;
+    const fs = matrixFontSize;
+
+    // Trail fade (dark translucent wipe creates fading glyphs)
+    ctx.fillStyle = "rgba(4, 10, 20, 0.08)";
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = fs + "px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+    ctx.textBaseline = "top";
+
+    for (let i = 0; i < matrixCols; i += 1) {
+      const drop = matrixDrops[i];
+      const x = i * fs;
+      const yPx = drop.y * fs;
+      const ch = matrixRandomChar();
+
+      // Bright head
+      ctx.fillStyle = "rgba(200, 255, 230, 0.92)";
+      ctx.fillText(ch, x, yPx);
+
+      // Dimmer trail character one step up
+      ctx.fillStyle = "rgba(45, 212, 191, 0.55)";
+      ctx.fillText(matrixRandomChar(), x, yPx - fs);
+
+      // Advance
+      drop.y += drop.speed;
+
+      // Reset stream with random gap after leaving viewport
+      if (yPx > h + drop.trail * fs) {
+        drop.y = -((Math.random() * 20) | 0);
+        drop.speed = 0.35 + Math.random() * 0.95;
+        drop.trail = 8 + ((Math.random() * 14) | 0);
+      }
+    }
+
+    matrixRainRaf = requestAnimationFrame(matrixDrawFrame);
+  }
+
+  function matrixDrawStaticField() {
+    // Accessibility: reduced motion — one static rain snapshot, no loop
+    if (!matrixRainCtx || !matrixDrops) return;
+    const w = window.innerWidth || 320;
+    const h = window.innerHeight || 480;
+    const ctx = matrixRainCtx;
+    const fs = matrixFontSize;
+    ctx.fillStyle = "rgba(4, 10, 20, 1)";
+    ctx.fillRect(0, 0, w, h);
+    ctx.font = fs + "px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+    ctx.textBaseline = "top";
+    for (let i = 0; i < matrixCols; i += 1) {
+      const len = 6 + ((Math.random() * 12) | 0);
+      const start = ((Math.random() * (h / fs)) | 0);
+      for (let t = 0; t < len; t += 1) {
+        const y = (start + t) * fs;
+        if (y > h) break;
+        const alpha = t === 0 ? 0.55 : Math.max(0.08, 0.4 - t * 0.04);
+        ctx.fillStyle = "rgba(45, 212, 191," + alpha + ")";
+        ctx.fillText(matrixRandomChar(), i * fs, y);
+      }
+    }
+  }
+
+  function matrixStartLoop() {
+    if (matrixPreferredReducedMotion()) {
+      matrixStopLoop();
+      matrixDrawStaticField();
+      return;
+    }
+    if (matrixRainRunning) return;
+    matrixRainRunning = true;
+    matrixRainRaf = requestAnimationFrame(matrixDrawFrame);
+  }
+
+  function initMatrixBackground() {
+    const canvas = document.getElementById("matrixCanvas") || $("matrixCanvas");
+    if (!canvas || typeof canvas.getContext !== "function") {
+      // Fallback: hide legacy host if present
+      const legacy = $("matrixBg");
+      if (legacy) legacy.innerHTML = "";
+      return;
+    }
+    matrixRainCanvas = canvas;
+    matrixRainCtx = canvas.getContext("2d", { alpha: false });
+    if (!matrixRainCtx) return;
+
+    matrixResizeCanvas();
+
+    if (matrixPreferredReducedMotion()) {
+      matrixDrawStaticField();
+    } else {
+      matrixStartLoop();
+    }
+
+    // Debounced resize
+    window.addEventListener("resize", () => {
+      if (matrixResizeTimer) clearTimeout(matrixResizeTimer);
+      matrixResizeTimer = setTimeout(() => {
+        const wasRunning = matrixRainRunning;
+        matrixStopLoop();
+        matrixResizeCanvas();
+        if (matrixPreferredReducedMotion()) {
+          matrixDrawStaticField();
+        } else if (document.visibilityState === "visible") {
+          matrixStartLoop();
+        } else if (wasRunning) {
+          /* stay paused until visible */
+        }
+      }, 120);
+    });
+
+    // Pause when tab hidden
+    document.addEventListener("visibilitychange", () => {
+      document.body.classList.toggle("hub-bg-paused", document.visibilityState !== "visible");
+      if (document.visibilityState !== "visible") {
+        matrixStopLoop();
+      } else if (!matrixPreferredReducedMotion()) {
+        matrixStartLoop();
+      }
+    });
   }
 
   /* ---------------- Mobile nav + smooth scroll ---------------- */

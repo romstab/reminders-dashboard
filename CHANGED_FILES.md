@@ -1,29 +1,22 @@
-# Hero overlap fix + Matrix background restore
+# Matrix digital rain — real animated canvas
 
-## Files changed
-
-| File | Changes |
-| ---- | ------- |
-| `index.html` | Fixed logo/title overlap; restored Matrix rain as page background only; kept card spinning lights disabled |
+| File | Change |
+| ---- | ------ |
+| `index.html` | Replaced static DOM matrix host with `<canvas id="matrixCanvas">`; CSS for fixed full-viewport canvas behind content |
+| `game.js` | Replaced DOM column matrix with canvas `requestAnimationFrame` digital rain (independent streams, trails, speeds) |
 | `CHANGED_FILES.md` | This summary |
 
-## Exact cause of logo/title overlap
-1. The logo `<img>` used inline `transform: scale(1.4)`, drawing 40% outside its circular shell into the title column.
-2. Conflicting CSS forced `.hero-top` to `grid-template-columns: 84px 1fr !important` while desktop logo was `112px`, so the logo overflowed the grid track into the title.
+## Implementation
+- **ONE** full-viewport canvas, `position: fixed`, `z-index: 0`, `pointer-events: none`
+- **ONE** `requestAnimationFrame` loop drawing falling glyphs
+- Columns = independent drops with random speed, trail length, reset
+- Character set: katakana + hex digits
+- Trail via translucent dark wipe each frame + bright head glyph
+- Resize debounced; pause on `document.visibilityState !== "visible"`
+- `prefers-reduced-motion`: static field, no continuous animation
+- Density capped by viewport (mobile fewer columns)
 
-## Exact fix
-1. Removed `scale(1.4)`; logo image now `object-fit: contain` inside a circular shell with `overflow: hidden`.
-2. `.hero-top` is CSS Grid: `auto minmax(0, 1fr)` so the logo column sizes to the logo and the title column gets the remaining space with `min-width: 0`.
-3. Responsive logo sizes: 72px (≤380) → 88px → 104px (tablet) → 120px (desktop). Title uses `clamp()` and normal wrapping.
-
-## Matrix background
-- Re-enabled `matrixFall` animation on `.matrix-col`.
-- Layer: `position: fixed; z-index: 0; pointer-events: none; opacity ~0.14`.
-- Content (`nav`, `hero`, `main`, cards) at `z-index ≥ 1` with opaque dark panels so rain stays **behind** boxes.
-- Not inside cards; no conic-gradient / rotating rims restored.
-- Reduced motion: animation off, low static opacity. Hidden tab: `animation-play-state: paused`.
-
-## Still disabled
-- Rotating card perimeter lights
-- `conic-gradient` rims
-- `hubRotate` / spinning `::before`/`::after` on cards
+## Preserved
+- Hero logo/title separation
+- No rotating card lights / conic rims
+- Auth, Firebase, arena logic, SW unchanged
