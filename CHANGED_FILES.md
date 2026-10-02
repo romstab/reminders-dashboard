@@ -1,12 +1,29 @@
-# UI/UX Overhaul — Changed Files
+# Hero overlap fix + Matrix background restore
 
-Visual system and responsive layout only. No auth, Firebase, AI, or game-logic changes.
+## Files changed
 
 | File | Changes |
 | ---- | ------- |
-| `index.html` | Removed PERIMETER ENERGY spinning conic-gradient / rotating rim effects on cards, hero, pins, links, logo, page frame. Replaced with static academic design tokens (border, shadow, radius, colors). Coherent type scale via clamp(). Progressive breakpoints (≤480 / 481–767 / 768+ / 1024+ / 1280+ / 1600+). Desktop max-width 1280–1400px centered. Multi-column grids for officers, stats, shortcuts, hero. Arena question area max-width on desktop. Quieter matrix ambient. Reduced blur. Guest-role links kept functional without animated rims. |
-| `dashboard.html` | Static background (no continuous gradient animation). Wider max container (1200–1280px). Overview stats grid responsive. Softer glass/shadow. Mobile input zoom prevention retained. |
-| `CHANGED_FILES.md` | This summary. |
+| `index.html` | Fixed logo/title overlap; restored Matrix rain as page background only; kept card spinning lights disabled |
+| `CHANGED_FILES.md` | This summary |
 
-## Unchanged
-`game.js`, `sw.js`, `manifest.webmanifest`, icons, `logo.png`, `package.json`, `vercel.json`, all `api/*` — behavior and paths preserved.
+## Exact cause of logo/title overlap
+1. The logo `<img>` used inline `transform: scale(1.4)`, drawing 40% outside its circular shell into the title column.
+2. Conflicting CSS forced `.hero-top` to `grid-template-columns: 84px 1fr !important` while desktop logo was `112px`, so the logo overflowed the grid track into the title.
+
+## Exact fix
+1. Removed `scale(1.4)`; logo image now `object-fit: contain` inside a circular shell with `overflow: hidden`.
+2. `.hero-top` is CSS Grid: `auto minmax(0, 1fr)` so the logo column sizes to the logo and the title column gets the remaining space with `min-width: 0`.
+3. Responsive logo sizes: 72px (≤380) → 88px → 104px (tablet) → 120px (desktop). Title uses `clamp()` and normal wrapping.
+
+## Matrix background
+- Re-enabled `matrixFall` animation on `.matrix-col`.
+- Layer: `position: fixed; z-index: 0; pointer-events: none; opacity ~0.14`.
+- Content (`nav`, `hero`, `main`, cards) at `z-index ≥ 1` with opaque dark panels so rain stays **behind** boxes.
+- Not inside cards; no conic-gradient / rotating rims restored.
+- Reduced motion: animation off, low static opacity. Hidden tab: `animation-play-state: paused`.
+
+## Still disabled
+- Rotating card perimeter lights
+- `conic-gradient` rims
+- `hubRotate` / spinning `::before`/`::after` on cards

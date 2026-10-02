@@ -258,12 +258,13 @@ img { display: block; max-width: 100%; }
 }
 
 .hero-top {
-  position: relative; z-index: 1; display: grid; grid-template-columns: 84px 1fr;
-  gap: 0.85rem; align-items: center; margin-top: 0.9rem;
+  position: relative; z-index: 2; display: grid; grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem; align-items: center; margin-top: 0.9rem; min-width: 0;
 }
 .logo-shell {
-  width: 80px; height: 80px; padding: 0.6rem; position: relative; isolation: isolate;
-  box-shadow: 0 0 0.8rem rgba(100, 255, 218, 0.38), 0 0 2rem rgba(100, 255, 218, 0.16), var(--shadow);
+  width: 88px; height: 88px; min-width: 88px; padding: 0; position: relative; isolation: isolate;
+  overflow: hidden; border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.35), 0 6px 18px rgba(0,0,0,0.3);
 }
 .logo-shell::before { content: none !important; display: none !important; }
 .hero-title { margin: 0; font-size: clamp(1.35rem, 5vw, 3.1rem); line-height: 1.1; letter-spacing: 0.01em; }
@@ -3014,8 +3015,8 @@ body.exam-week .question-text { font-size: clamp(1.15rem, 5.2vw, 1.5rem) !import
   }
   .nav-inner { flex-wrap: wrap; }
   .hero-shell { grid-template-columns: 1.2fr 0.85fr; align-items: stretch; }
-  .hero-top { grid-template-columns: 120px 1fr; }
-  .logo-shell { width: 112px; height: 112px; }
+  .hero-top { grid-template-columns: auto minmax(0, 1fr); }
+  .logo-shell { width: 104px; height: 104px; min-width: 104px; }
   .two-col { grid-template-columns: repeat(2, 1fr); }
   .officer-grid { grid-template-columns: repeat(4, 1fr); }
   .freshmen-grid { grid-template-columns: repeat(3, 1fr); }
@@ -3295,38 +3296,90 @@ body.role-visitor .ou-react-btn {
    Formal · premium · subtle energy lines · no emojis
    ===================================================================== */
 
-/* Restore original logo treatment (do not override size/shape aggressively) */
+/* ---- HERO LOGO + TITLE LAYOUT (no overlap) ---- */
 .hero-top {
-  grid-template-columns: 84px 1fr !important;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
   align-items: center !important;
-  gap: 0.85rem !important;
+  gap: 1rem 1.15rem !important;
+  margin-top: 0.75rem !important;
+  position: relative !important;
+  z-index: 2 !important;
+  min-width: 0 !important;
+}
+.hero-top > div:last-child {
+  min-width: 0 !important;
+  overflow: visible !important;
 }
 .logo-shell {
-  width: 80px !important;
-  height: 80px !important;
-  padding: 0.6rem !important;
+  width: 88px !important;
+  height: 88px !important;
+  min-width: 88px !important;
+  max-width: 88px !important;
+  padding: 0 !important;
   border-radius: 50% !important;
-  /* keep original soft cyan ring; do not enlarge or box */
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  isolation: isolate !important;
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.35), 0 6px 18px rgba(0,0,0,0.35) !important;
+  background: rgba(6, 12, 24, 0.9) !important;
 }
-@media (min-width: 900px) {
-  .logo-shell { width: 112px !important; height: 112px !important; }
+.logo-shell .logo-img,
+.logo-shell img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border-radius: 50% !important;
+  display: block !important;
+  transform: none !important;
+  max-width: 100% !important;
+}
+@media (min-width: 768px) {
+  .logo-shell {
+    width: 104px !important;
+    height: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+  }
+  .hero-top { gap: 1.15rem 1.35rem !important; }
+}
+@media (min-width: 1024px) {
+  .logo-shell {
+    width: 120px !important;
+    height: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+  }
+  .hero-top { gap: 1.25rem 1.5rem !important; }
 }
 @media (max-width: 380px) {
-  .logo-shell { width: 72px !important; height: 72px !important; }
+  .logo-shell {
+    width: 72px !important;
+    height: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+  }
+  .hero-top { gap: 0.75rem !important; }
 }
 
-/* Title: natural, connected typography */
+/* Title: fully visible, wraps, never under logo */
 .hero-title {
   margin: 0 !important;
-  font-size: clamp(1.35rem, 5vw, 2.75rem) !important;
-  line-height: 1.12 !important;
-  letter-spacing: 0.005em !important;
+  font-size: clamp(1.2rem, 1.1rem + 1.6vw, 2.35rem) !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
   font-weight: 800 !important;
   color: #f4f8fc !important;
   background: none !important;
   -webkit-text-fill-color: unset !important;
   filter: none !important;
-  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.35);
+  text-shadow: none !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  max-width: 100% !important;
 }
 .hero-title-accent {
   display: inline !important;
@@ -3336,15 +3389,20 @@ body.role-visitor .ou-react-btn {
   border-radius: 0 !important;
   background: none !important;
   box-shadow: none !important;
-  color: #5eead4 !important;
-  -webkit-text-fill-color: #5eead4 !important;
+  color: #2dd4bf !important;
+  -webkit-text-fill-color: #2dd4bf !important;
   font-weight: 800 !important;
   letter-spacing: 0.01em;
 }
 .hero-sub {
+  margin: 0.4rem 0 0 !important;
   color: #94a3b8 !important;
   font-weight: 500 !important;
-  font-size: clamp(0.82rem, 2vw, 1rem) !important;
+  font-size: clamp(0.78rem, 0.72rem + 0.35vw, 0.98rem) !important;
+  line-height: 1.45 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  max-width: 100% !important;
 }
 
 /* Eyebrow: quieter, formal */
@@ -3687,21 +3745,51 @@ body.role-admin .cm-primary-link:active {
 }
 
 /* Quieter ambient background motion */
-.matrix-bg { opacity: 0.035 !important; }
-.matrix-col { animation: none !important; opacity: 0.35 !important; text-shadow: none !important; }
-.grid-bg { opacity: 0.08 !important; }
+.matrix-bg {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  opacity: 0.14 !important;
+}
+.matrix-col {
+  animation: matrixFall linear infinite !important;
+  opacity: 0.85 !important;
+  color: #5dffe0 !important;
+  text-shadow: 0 0 6px rgba(93, 255, 224, 0.25) !important;
+  font-size: 13px !important;
+}
+.grid-bg {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  opacity: 0.1 !important;
+}
+
+
+/* Layering: matrix (0) → content (≥1) → modals (high) */
+.nav, .hero, main#main, footer, .topline {
+  position: relative;
+  z-index: 1;
+}
+.matrix-bg, .grid-bg {
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
 
 /* ---- Cards / panels: static, readable ---- */
 .glass, .card, .note-card, .statbox, .arena-panel, .resource-card,
 .hero-main.glass, .hero-side.glass, .auth-panel, .login-panel,
 .today-card, .announce-welcome, .admin-pin.is-visible {
   position: relative !important;
-  background: var(--ds-card-bg) !important;
+  background: linear-gradient(165deg, rgba(12, 22, 40, 0.94), rgba(6, 12, 24, 0.96)) !important;
   border: var(--ds-border) !important;
   border-radius: var(--ds-radius) !important;
   box-shadow: var(--ds-shadow-sm) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
   overflow: hidden;
 }
 
@@ -3734,36 +3822,38 @@ body.role-admin .cm-primary-link:active {
   transform: scale(0.98);
 }
 
-/* Hero title — static, clear hierarchy */
+/* Hero title — static; sizes controlled by HERO LOGO+TITLE block above */
 .hero-title {
   background: none !important;
   -webkit-text-fill-color: unset !important;
-  color: var(--ds-text) !important;
+  color: #f4f8fc !important;
   animation: none !important;
-  font-size: clamp(1.35rem, 2.5vw + 0.6rem, 2.15rem) !important;
-  line-height: 1.2 !important;
-  letter-spacing: -0.01em !important;
-  font-weight: 800 !important;
   text-shadow: none !important;
   filter: none !important;
+  white-space: normal !important;
+  max-width: 100% !important;
 }
 .hero-title-accent {
-  color: var(--ds-accent) !important;
-  -webkit-text-fill-color: var(--ds-accent) !important;
+  color: #2dd4bf !important;
+  -webkit-text-fill-color: #2dd4bf !important;
   background: none !important;
   animation: none !important;
   display: inline !important;
 }
 .hero-sub {
-  color: var(--ds-muted) !important;
-  font-size: clamp(0.84rem, 1.2vw + 0.5rem, 1rem) !important;
+  color: #94a3b8 !important;
   font-weight: 500 !important;
+  white-space: normal !important;
+  max-width: 100% !important;
 }
 
 .logo-shell {
-  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.28), var(--ds-shadow-sm) !important;
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.35), 0 6px 18px rgba(0,0,0,0.3) !important;
+  overflow: hidden !important;
+  border-radius: 50% !important;
 }
-.logo-shell::before { content: none !important; display: none !important; }
+.logo-shell::before,
+.logo-shell::after { content: none !important; display: none !important; }
 
 .announce-welcome {
   margin: 0.75rem 0 !important;
@@ -4019,7 +4109,8 @@ body.arena-playing.streak-hot #gameView.active {
     animation: none !important;
     transition: none !important;
   }
-  .matrix-bg, .matrix-col, .grid-bg { display: none !important; }
+  .matrix-col { animation: none !important; opacity: 0.25 !important; }
+  .matrix-bg { opacity: 0.06 !important; }
 }
 
 /* ===================================================================
@@ -4042,8 +4133,8 @@ input, select, textarea {
 
 /* Reduce continuous GPU cost of ambient matrix on small screens */
 @media (max-width: 640px) {
-  .matrix-bg { opacity: 0.05; }
-  .matrix-col { font-size: 11px; text-shadow: none; }
+  .matrix-bg { opacity: 0.1; }
+  .matrix-col { font-size: 11px; }
   .grid-bg { opacity: 0.1; background-size: 40px 40px; }
   .glass, .card {
     backdrop-filter: blur(8px) saturate(120%);
@@ -4330,7 +4421,7 @@ body.hub-bg-paused .matrix-col {
 
         <div class="hero-top">
           <div class="logo-shell" aria-label="BSCS 1-A official mark">
-            <img src="logo.png" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; transform: scale(1.4); transform-origin: center;" alt="Logo">
+            <img src="logo.png" class="logo-img" alt="BSCS 1-A official mark" width="112" height="112">
           </div>
 
           <div>
