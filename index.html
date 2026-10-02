@@ -146,8 +146,8 @@ img { display: block; max-width: 100%; }
     linear-gradient(180deg, rgba(16, 32, 58, 0.78), rgba(10, 20, 40, 0.55));
   border: 1px solid var(--line);
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
   position: relative; z-index: 1;
 }
 .card { border-radius: var(--radius); }
@@ -265,11 +265,7 @@ img { display: block; max-width: 100%; }
   width: 80px; height: 80px; padding: 0.6rem; position: relative; isolation: isolate;
   box-shadow: 0 0 0.8rem rgba(100, 255, 218, 0.38), 0 0 2rem rgba(100, 255, 218, 0.16), var(--shadow);
 }
-.logo-shell::before {
-  content: ""; position: absolute; inset: -3px; border-radius: 50%;
-  background: conic-gradient(from 220deg, rgba(100,255,218,0), rgba(100,255,218,0.46), rgba(0,229,255,0.24), rgba(100,255,218,0));
-  filter: blur(8px); z-index: -1;
-}
+.logo-shell::before { content: none !important; display: none !important; }
 .hero-title { margin: 0; font-size: clamp(1.35rem, 5vw, 3.1rem); line-height: 1.1; letter-spacing: 0.01em; }
 .hero-sub { margin: 0.35rem 0 0; font-size: clamp(0.86rem, 2vw, 1.1rem); color: var(--muted); }
 
@@ -281,7 +277,7 @@ img { display: block; max-width: 100%; }
 .announce::after {
   content: ""; position: absolute; inset: 0; border-radius: 16px;
   box-shadow: 0 0 0 1px rgba(255, 204, 102, 0.3) inset, 0 0 16px rgba(255, 204, 102, 0.14);
-  animation: pulseWarn 2.8s ease-in-out infinite; pointer-events: none;
+  animation: none; opacity: 0.7; pointer-events: none;
 }
 @keyframes pulseWarn { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
 
@@ -3618,567 +3614,413 @@ body.role-admin .cm-primary-link:active {
 
 
 /* =====================================================================
-   PERIMETER ENERGY v11 — REAL rotating border (transform, no @property)
-   Works on Android Chrome. Streak travels full perimeter.
+   UI/UX OVERHAUL — static design system (no moving perimeter lights)
+   Academic dashboard aesthetic: content > structure > subtle decoration
    ===================================================================== */
 
-@keyframes hubRotate {
-  to { transform: rotate(360deg); }
-}
+/* Kill spinning perimeter / conic disc effects completely */
+@keyframes hubRotate { to { transform: none; } }
 @keyframes hubTitleSweep {
-  0% { background-position: 140% 50%; }
-  100% { background-position: -40% 50%; }
+  0%, 100% { background-position: 0% 50%; }
 }
 
-/* Kill background motion */
-body::before, body::after {
-  content: none !important;
-  display: none !important;
-  animation: none !important;
-}
-.matrix-bg, .grid-bg { animation: none !important; }
-
-/*
-  Technique:
-  ::before = large spinning conic gradient (behind)
-  ::after  = solid fill inset 2px (covers center)
-  → only the 2px rim shows the moving light
-  children z-index: 2 stay on top
-*/
-
-/* —— HIGH: shortcuts, hero, pin, welcome —— */
-.hero-main.glass,
-.admin-pin.is-visible,
-.cm-primary-link,
-.guest-primary-link.top-link,
-.announce-welcome,
-.hero-side.glass {
-  position: relative !important;
-  overflow: hidden !important;
-  isolation: isolate;
-  z-index: 0;
-  border: none !important;
-}
-
-.hero-main.glass {
-  --hub-live: #22d3ee;
-  --hub-live-2: #7dd3fc;
-  --hub-fill: linear-gradient(165deg, rgba(18, 32, 56, 0.98), rgba(6, 12, 24, 0.99));
-  --hub-speed: 4.5s;
-}
-.admin-pin.is-visible {
-  --hub-live: #fbbf24;
-  --hub-live-2: #fde68a;
-  --hub-fill: linear-gradient(155deg, rgba(40, 32, 18, 0.97), rgba(12, 18, 32, 0.98));
-  --hub-speed: 5.5s;
-}
-.top-link-ou {
-  --hub-live: #22d3ee;
-  --hub-live-2: #a5f3fc;
-  --hub-fill: linear-gradient(165deg, rgba(12, 28, 42, 0.98), rgba(6, 14, 24, 0.99));
-  --hub-speed: 3.8s;
-}
-.top-link-sched {
-  --hub-live: #8b5cf6;
-  --hub-live-2: #c4b5fd;
-  --hub-fill: linear-gradient(165deg, rgba(22, 18, 42, 0.98), rgba(8, 10, 24, 0.99));
-  --hub-speed: 4.1s;
-}
-.top-link-res {
-  --hub-live: #2dd4bf;
-  --hub-live-2: #99f6e4;
-  --hub-fill: linear-gradient(165deg, rgba(10, 32, 30, 0.98), rgba(6, 16, 16, 0.99));
-  --hub-speed: 4.3s;
-}
-.top-link-dash,
-.guest-primary-link.top-link {
-  --hub-live: #fbbf24;
-  --hub-live-2: #fde68a;
-  --hub-fill: linear-gradient(165deg, rgba(32, 26, 12, 0.98), rgba(12, 10, 6, 0.99));
-  --hub-speed: 4.5s;
-}
-.announce-welcome {
-  --hub-live: #22d3ee;
-  --hub-live-2: #67e8f9;
-  --hub-fill: linear-gradient(180deg, rgba(19, 34, 58, 0.92), rgba(12, 20, 36, 0.95));
-  --hub-speed: 6.5s;
-}
-.hero-side.glass {
-  --hub-live: #60a5fa;
-  --hub-live-2: #93c5fd;
-  --hub-fill: linear-gradient(165deg, rgba(16, 28, 48, 0.97), rgba(8, 14, 26, 0.99));
-  --hub-speed: 7s;
-}
-
-/* Spinning energy disc (covers card + margin) */
 .hero-main.glass::before,
+.hero-side.glass::before,
 .admin-pin.is-visible::before,
 .cm-primary-link::before,
 .guest-primary-link.top-link::before,
 .announce-welcome::before,
-.hero-side.glass::before {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  width: 200% !important;
-  height: 200% !important;
-  top: 50% !important;
-  left: 50% !important;
-  margin: 0 !important;
-  translate: -50% -50%;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  inset: auto !important;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    transparent 72%,
-    color-mix(in srgb, var(--hub-live) 35%, transparent) 80%,
-    var(--hub-live) 88%,
-    var(--hub-live-2) 94%,
-    transparent 100%
-  ) !important;
-  animation: hubRotate var(--hub-speed, 4s) linear infinite !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  opacity: 1 !important;
-  filter: none !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-}
-
-/* Solid fill covers center — only rim shows spinning light */
-.hero-main.glass::after,
-.admin-pin.is-visible::after,
-.cm-primary-link::after,
-.guest-primary-link.top-link::after,
-.announce-welcome::after,
-.hero-side.glass::after {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  inset: 2px !important;
-  border-radius: inherit !important;
-  background: var(--hub-fill, #0a1220) !important;
-  z-index: 1 !important;
-  pointer-events: none !important;
-  animation: none !important;
-  padding: 0 !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-  filter: none !important;
-  opacity: 1 !important;
-  width: auto !important;
-  height: auto !important;
-  top: 2px !important;
-  left: 2px !important;
-  right: 2px !important;
-  bottom: 2px !important;
-  translate: none !important;
-  margin: 0 !important;
-}
-
-/* Soft outer glow matching accent */
-.hero-main.glass,
-.admin-pin.is-visible,
-.cm-primary-link,
-.guest-primary-link.top-link {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--hub-live) 40%, transparent),
-    0 0 20px color-mix(in srgb, var(--hub-live) 20%, transparent),
-    0 12px 28px rgba(0, 0, 0, 0.35) !important;
-}
-
-/* Content above fill */
-.hero-main.glass > *,
-.admin-pin.is-visible > *,
-.cm-primary-link > *,
-.guest-primary-link.top-link > *,
-.announce-welcome > *,
-.hero-side.glass > * {
-  position: relative !important;
-  z-index: 2 !important;
-}
-
-/* Hover / active */
-.cm-primary-link:hover,
-.guest-primary-link.top-link:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 0 0 1px var(--hub-live),
-    0 0 28px color-mix(in srgb, var(--hub-live) 35%, transparent),
-    0 16px 36px rgba(0, 0, 0, 0.4) !important;
-}
-.cm-primary-link:hover::before,
-.guest-primary-link.top-link:hover::before {
-  animation-duration: 2.2s !important;
-}
-.cm-primary-link:active,
-.guest-primary-link.top-link:active {
-  transform: scale(0.97);
-}
-
-/* —— MEDIUM: lower cards —— */
-.today-card,
-.note-card,
-.statbox,
-.resource-card,
-.arena-panel,
-.padlet-box,
-.card.pad,
-#resources .card,
-#schedule .card,
-#officers .card,
-#freshmen .card,
-#freedom-wall .card,
-#vision-mission .card,
-#quick-links .linkcard,
-#reviewer-arena .arena-panel,
-.auth-panel {
-  position: relative !important;
-  overflow: hidden !important;
-  isolation: isolate;
-  z-index: 0;
-  --hub-live: #22d3ee;
-  --hub-live-2: #7dd3fc;
-  --hub-fill: linear-gradient(165deg, rgba(16, 28, 48, 0.96), rgba(8, 14, 26, 0.98));
-  --hub-speed: 8s;
-  box-shadow:
-    0 0 0 1px rgba(34, 211, 238, 0.25),
-    0 10px 28px rgba(0, 0, 0, 0.28) !important;
-}
-
+.auth-panel::before,
+.login-panel::before,
+.arena-panel::before,
 .today-card::before,
 .note-card::before,
 .statbox::before,
 .resource-card::before,
-.arena-panel::before,
-.padlet-box::before,
-.card.pad::before,
-#resources .card::before,
-#schedule .card::before,
-#officers .card::before,
-#freshmen .card::before,
-#freedom-wall .card::before,
-#vision-mission .card::before,
-#quick-links .linkcard::before,
-#reviewer-arena .arena-panel::before,
-.auth-panel::before {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  width: 200% !important;
-  height: 200% !important;
-  top: 50% !important;
-  left: 50% !important;
-  translate: -50% -50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    transparent 75%,
-    rgba(34, 211, 238, 0.3) 82%,
-    #22d3ee 90%,
-    #7dd3fc 95%,
-    transparent 100%
-  ) !important;
-  animation: hubRotate var(--hub-speed, 8s) linear infinite !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-}
-
-.today-card::after,
-.note-card::after,
-.statbox::after,
-.resource-card::after,
-.arena-panel::after,
-.padlet-box::after,
-.card.pad::after,
-#resources .card::after,
-#schedule .card::after,
-#officers .card::after,
-#freshmen .card::after,
-#freedom-wall .card::after,
-#vision-mission .card::after,
-#quick-links .linkcard::after,
-#reviewer-arena .arena-panel::after,
-.auth-panel::after {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  inset: 1.5px !important;
-  border-radius: inherit !important;
-  background: var(--hub-fill) !important;
-  z-index: 1 !important;
-  pointer-events: none !important;
-  animation: none !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-}
-
-.resource-card > *,
-.note-card > *,
-.statbox > *,
-.arena-panel > *,
-.card.pad > *,
-.auth-panel > *,
-.today-card > * {
-  position: relative !important;
-  z-index: 2 !important;
-}
-
-/* Logo orbit — circular, transform works perfectly */
-.logo-shell {
-  position: relative !important;
-  overflow: visible !important;
-}
-.logo-shell::before {
-  content: none !important;
-}
+.hub-page-frame::before,
 .logo-shell::after {
-  content: "" !important;
-  position: absolute !important;
-  inset: -6px !important;
-  border-radius: 50% !important;
-  z-index: -1 !important;
-  pointer-events: none !important;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    transparent 72%,
-    rgba(34, 211, 238, 0.25) 80%,
-    #22d3ee 90%,
-    rgba(251, 191, 36, 0.6) 96%,
-    transparent 100%
-  ) !important;
-  animation: hubRotate 5s linear infinite !important;
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 1px)) !important;
-  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 1px)) !important;
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+  background: none !important;
 }
 
-/* Title text sweep */
+.hero-main.glass::after,
+.hero-side.glass::after,
+.admin-pin.is-visible::after,
+.cm-primary-link::after,
+.guest-primary-link.top-link::after,
+.announce-welcome::after,
+.auth-panel::after,
+.login-panel::after,
+.arena-panel::after,
+.today-card::after,
+.hub-page-frame::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+  background: none !important;
+}
+
+.hub-page-frame {
+  position: static !important;
+  overflow: visible !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ---- Design tokens (coherent system) ---- */
+:root {
+  --ds-radius: 16px;
+  --ds-radius-sm: 12px;
+  --ds-border: 1px solid rgba(148, 163, 184, 0.14);
+  --ds-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  --ds-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.18);
+  --ds-card-bg: linear-gradient(165deg, rgba(16, 28, 48, 0.92), rgba(8, 14, 26, 0.94));
+  --ds-card-bg-solid: rgba(12, 20, 36, 0.94);
+  --ds-accent: #2dd4bf;
+  --ds-accent-2: #38bdf8;
+  --ds-text: #e8eef7;
+  --ds-muted: rgba(203, 213, 225, 0.78);
+  --ds-max: 1280px;
+  --ds-gap: 1rem;
+}
+
+/* Quieter ambient background motion */
+.matrix-bg { opacity: 0.035 !important; }
+.matrix-col { animation: none !important; opacity: 0.35 !important; text-shadow: none !important; }
+.grid-bg { opacity: 0.08 !important; }
+
+/* ---- Cards / panels: static, readable ---- */
+.glass, .card, .note-card, .statbox, .arena-panel, .resource-card,
+.hero-main.glass, .hero-side.glass, .auth-panel, .login-panel,
+.today-card, .announce-welcome, .admin-pin.is-visible {
+  position: relative !important;
+  background: var(--ds-card-bg) !important;
+  border: var(--ds-border) !important;
+  border-radius: var(--ds-radius) !important;
+  box-shadow: var(--ds-shadow-sm) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  overflow: hidden;
+}
+
+.glass > *, .card > *, .hero-main.glass > *, .hero-side.glass > *,
+.auth-panel > *, .announce-welcome > *, .admin-pin.is-visible > *,
+.cm-primary-link > *, .guest-primary-link.top-link > *, .today-card > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Top shortcut links — solid cards, no spin */
+.cm-primary-link,
+.guest-primary-link.top-link,
+.top-link {
+  background: var(--ds-card-bg-solid) !important;
+  border: var(--ds-border) !important;
+  border-radius: var(--ds-radius-sm) !important;
+  box-shadow: var(--ds-shadow-sm) !important;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease !important;
+}
+.cm-primary-link:hover,
+.guest-primary-link.top-link:hover,
+.top-link:hover {
+  border-color: rgba(45, 212, 191, 0.35) !important;
+  transform: translateY(-1px);
+  filter: none !important;
+}
+.cm-primary-link:active,
+.guest-primary-link.top-link:active {
+  transform: scale(0.98);
+}
+
+/* Hero title — static, clear hierarchy */
 .hero-title {
-  background-image: linear-gradient(100deg, #f8fafc 0%, #f8fafc 36%, #a5f3fc 50%, #f8fafc 64%, #f8fafc 100%) !important;
-  background-size: 220% 100% !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-  animation: hubTitleSweep 7s ease-in-out infinite;
+  background: none !important;
+  -webkit-text-fill-color: unset !important;
+  color: var(--ds-text) !important;
+  animation: none !important;
+  font-size: clamp(1.35rem, 2.5vw + 0.6rem, 2.15rem) !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
 .hero-title-accent {
-  background-image: linear-gradient(100deg, #5eead4 0%, #5eead4 36%, #ecfeff 50%, #5eead4 64%, #5eead4 100%) !important;
-  background-size: 220% 100% !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-  animation: hubTitleSweep 7s ease-in-out infinite 0.25s;
-}
-
-/* SCREEN EDGE — spinning disc clipped to 2px outer frame (parent does NOT rotate) */
-.hub-page-frame {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 960;
-  overflow: hidden;
-  border-radius: 0;
-  padding: 2px;
-  box-sizing: border-box;
-  background: transparent;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
+  color: var(--ds-accent) !important;
+  -webkit-text-fill-color: var(--ds-accent) !important;
+  background: none !important;
   animation: none !important;
-  opacity: 1;
+  display: inline !important;
 }
-.hub-page-frame::before {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  width: 150vmax !important;
-  height: 150vmax !important;
-  top: 50% !important;
-  left: 50% !important;
-  translate: -50% -50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    transparent 78%,
-    rgba(34, 211, 238, 0.25) 84%,
-    #38bdf8 91%,
-    rgba(167, 139, 250, 0.5) 96%,
-    transparent 100%
-  ) !important;
-  animation: hubRotate 10s linear infinite !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-}
-.hub-page-frame::after {
-  display: none !important;
-  content: none !important;
+.hero-sub {
+  color: var(--ds-muted) !important;
+  font-size: clamp(0.84rem, 1.2vw + 0.5rem, 1rem) !important;
+  font-weight: 500 !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-main.glass::before,
-  .admin-pin.is-visible::before,
-  .cm-primary-link::before,
-  .guest-primary-link.top-link::before,
-  .announce-welcome::before,
-  .hero-side.glass::before,
-  .today-card::before,
-  .note-card::before,
-  .statbox::before,
-  .resource-card::before,
-  .arena-panel::before,
-  .padlet-box::before,
-  .card.pad::before,
-  #resources .card::before,
-  #schedule .card::before,
-  #officers .card::before,
-  #freshmen .card::before,
-  #freedom-wall .card::before,
-  #vision-mission .card::before,
-  #quick-links .linkcard::before,
-  #reviewer-arena .arena-panel::before,
-  .auth-panel::before,
-  .logo-shell::after,
-  .hub-page-frame,
-  .hero-title,
-  .hero-title-accent {
-    animation: none !important;
-  }
-  .hero-title {
-    color: #f8fafc !important;
-    -webkit-text-fill-color: #f8fafc !important;
-    background: none !important;
-  }
-  .hero-title-accent {
-    color: #5eead4 !important;
-    -webkit-text-fill-color: #5eead4 !important;
-    background: none !important;
-  }
+.logo-shell {
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.28), var(--ds-shadow-sm) !important;
+}
+.logo-shell::before { content: none !important; display: none !important; }
+
+.announce-welcome {
+  margin: 0.75rem 0 !important;
+  padding: 0.85rem 1rem !important;
+}
+.welcome-lead {
+  font-size: clamp(0.92rem, 1.5vw, 1.05rem);
+  font-weight: 800;
+  color: var(--ds-text);
+}
+.welcome-desc {
+  font-size: 0.82rem;
+  color: var(--ds-muted);
 }
 
+/* Buttons — consistent, subtle */
+.btn, .arena-btn, .login-modal-btn, .lifeline-btn, .choice {
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease, opacity 0.15s ease !important;
+  box-shadow: none !important;
+}
+.btn:hover, .arena-btn:hover, .login-modal-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+.btn:active, .arena-btn:active, .login-modal-btn:active, .lifeline-btn:active {
+  transform: scale(0.98);
+}
+.btn-primary {
+  box-shadow: 0 4px 14px rgba(45, 212, 191, 0.15) !important;
+}
+.btn:focus-visible, .arena-btn:focus-visible, .nav-links a:focus-visible,
+.choice:focus-visible, .top-link:focus-visible {
+  outline: 2px solid rgba(45, 212, 191, 0.65);
+  outline-offset: 2px;
+}
 
-
-/* =====================================================================
-   GUEST SHORTCUT FIX v12
-   The guest strip is intentionally simple/readable.  Do not let the
-   perimeter-energy pseudo layers paint a dark surface over these links.
-   Locked links stay visibly locked instead of becoming unreadable.
-   ===================================================================== */
-body.role-guest .guest-primary-link.top-link {
-  position: relative !important;
-  isolation: isolate !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-height: 64px !important;
-  padding: 0.85rem 0.7rem !important;
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  background: linear-gradient(145deg, rgba(18, 35, 58, 0.96), rgba(8, 18, 34, 0.98)) !important;
-  border: 1px solid rgba(100, 255, 218, 0.30) !important;
-  color: #f1f5f9 !important;
+/* Section titles */
+.section-title h2 {
+  font-size: clamp(1.05rem, 1.4vw + 0.6rem, 1.35rem) !important;
+  font-weight: 800 !important;
+  color: var(--ds-text) !important;
+}
+.section-title span {
+  color: var(--ds-muted) !important;
   font-size: 0.82rem !important;
-  font-weight: 850 !important;
-  line-height: 1.2 !important;
-  text-align: center !important;
-  text-decoration: none !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.05) !important;
-  opacity: 1 !important;
-  filter: none !important;
-  -webkit-tap-highlight-color: transparent;
 }
 
-/* Remove the rotating disc/fill from the guest shortcut anchors. */
+/* Nav — cleaner */
+.nav {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  background: rgba(6, 12, 24, 0.88) !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1) !important;
+}
+.nav-links a {
+  border-radius: 10px !important;
+  transition: background 0.15s ease, border-color 0.15s ease !important;
+}
+.nav-links a:hover {
+  transform: none !important;
+  background: rgba(45, 212, 191, 0.08) !important;
+}
+
+/* Guest role — readable static states (functional, no spin) */
+body.role-guest .guest-primary-link.top-link {
+  background: rgba(12, 20, 36, 0.94) !important;
+  border: 1px solid rgba(148, 163, 184, 0.16) !important;
+  box-shadow: var(--ds-shadow-sm) !important;
+}
 body.role-guest .guest-primary-link.top-link::before,
 body.role-guest .guest-primary-link.top-link::after {
   content: none !important;
   display: none !important;
-  animation: none !important;
 }
-
-body.role-guest .guest-primary-link.top-link:hover,
-body.role-guest .guest-primary-link.top-link:focus-visible {
-  transform: translateY(-1px) !important;
-  border-color: rgba(100, 255, 218, 0.62) !important;
-  background: linear-gradient(145deg, rgba(24, 48, 76, 0.98), rgba(10, 25, 44, 0.99)) !important;
-  box-shadow: 0 12px 28px rgba(0,0,0,.30), 0 0 20px rgba(100,255,218,.12) !important;
-  outline: none !important;
-}
-
-body.role-guest .guest-primary-link.top-link:active {
-  transform: scale(.985) !important;
-}
-
-/* Classmates-only guest links: readable disabled state + clear lock label. */
 body.role-guest .guest-primary-link.top-link.locked-for-guest {
-  pointer-events: none !important;
-  opacity: 1 !important;
-  filter: none !important;
-  cursor: not-allowed !important;
-  padding-bottom: 1.65rem !important;
-  border-color: rgba(251, 191, 36, 0.42) !important;
-  background: linear-gradient(145deg, rgba(43, 34, 17, 0.94), rgba(18, 20, 27, 0.98)) !important;
-  color: rgba(241, 245, 249, 0.82) !important;
+  opacity: 0.72;
+  pointer-events: none;
 }
-
-body.role-guest .guest-primary-link.top-link.locked-for-guest::after {
-  content: "🔒 Classmates only" !important;
-  display: block !important;
-  position: absolute !important;
-  left: 50% !important;
-  bottom: 0.42rem !important;
-  transform: translateX(-50%) !important;
-  width: max-content !important;
-  max-width: calc(100% - 0.6rem) !important;
-  overflow: hidden !important;
-  white-space: nowrap !important;
-  color: #ffd27d !important;
-  font-size: 0.60rem !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  letter-spacing: .015em !important;
-  text-shadow: 0 1px 4px rgba(0,0,0,.7) !important;
-  pointer-events: none !important;
-  z-index: 3 !important;
-}
-
-/* Public guest links get a clear accent without the heavy animated rim. */
 body.role-guest .guest-primary-link.top-link:not(.locked-for-guest) {
-  border-color: rgba(45, 212, 191, 0.42) !important;
-  background: linear-gradient(145deg, rgba(12, 43, 43, 0.97), rgba(8, 24, 32, 0.99)) !important;
-  color: #ecfeff !important;
+  border-color: rgba(45, 212, 191, 0.28) !important;
 }
-
-/* Two-column guest strip on phones; never squeeze the labels into a
-   single unreadable line. */
 body.role-guest .top-links {
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 0.65rem !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0.55rem !important;
 }
 
-@media (max-width: 360px) {
-  body.role-guest .guest-primary-link.top-link {
-    min-height: 62px !important;
-    font-size: 0.76rem !important;
-    padding-left: .45rem !important;
-    padding-right: .45rem !important;
+/* ---- Layout system: mobile → desktop ---- */
+.wrap {
+  width: min(var(--ds-max), calc(100% - 1.25rem)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .wrap { width: min(var(--ds-max), calc(100% - 0.85rem)) !important; }
+  .pad, .hero-main, .hero-side, .arena-content { padding: 0.85rem !important; }
+  .hero { padding: 1rem 0 0.65rem !important; }
+  .choice {
+    min-height: 3rem;
+    padding: 0.7rem 0.65rem;
+    font-size: 0.8rem;
   }
-  body.role-guest .guest-primary-link.top-link.locked-for-guest {
-    padding-bottom: 1.55rem !important;
+  .top-links { grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; }
+  .stats-grid { grid-template-columns: 1fr 1fr !important; }
+  .section-title h2 { font-size: 1.05rem !important; }
+}
+
+/* Large phones */
+@media (min-width: 481px) and (max-width: 767px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .top-links { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .wrap { width: min(var(--ds-max), calc(100% - 2rem)) !important; }
+  .hero-shell {
+    grid-template-columns: 1.15fr 0.85fr !important;
+    gap: 1.15rem !important;
+    align-items: start !important;
+  }
+  .officer-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .freshmen-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .stats-grid { grid-template-columns: repeat(4, 1fr) !important; }
+  .quick-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .two-col { grid-template-columns: 1fr 1fr !important; }
+  .top-links { grid-template-columns: repeat(4, 1fr) !important; }
+  .pad, .hero-main, .hero-side, .arena-content { padding: 1.15rem !important; }
+  .hud { grid-template-columns: repeat(4, 1fr) !important; }
+  .mode-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Laptop */
+@media (min-width: 1024px) {
+  .wrap { width: min(var(--ds-max), calc(100% - 2.5rem)) !important; }
+  .officer-grid { grid-template-columns: repeat(4, 1fr) !important; }
+  .freshmen-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .quick-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .hero-shell {
+    grid-template-columns: 1.25fr 0.9fr !important;
+    gap: 1.35rem !important;
+  }
+  .hero-main, .hero-side, .pad, .arena-content { padding: 1.35rem 1.45rem !important; }
+  /* Arena desktop comfort */
+  #reviewer-arena .arena-shell,
+  #reviewer-arena .arena-content {
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .choices { gap: 0.75rem !important; }
+  .choice {
+    min-height: 3.8rem;
+    font-size: 0.95rem;
+    padding: 1rem 1.05rem;
+  }
+  .question-text {
+    font-size: clamp(1.15rem, 1.2vw + 0.7rem, 1.45rem) !important;
+  }
+  /* Main feed rhythm */
+  main#main > .wrap > section {
+    margin-top: 1.35rem;
+  }
+  .section-title {
+    margin-bottom: 0.9rem;
   }
 }
 
+/* Wide desktop */
+@media (min-width: 1280px) {
+  .wrap { width: min(1360px, calc(100% - 3rem)) !important; }
+  .hero-shell {
+    grid-template-columns: 1.3fr 0.95fr !important;
+    gap: 1.5rem !important;
+  }
+  body.view-desktop .wrap {
+    width: min(1360px, calc(100% - 3rem)) !important;
+  }
+}
+
+@media (min-width: 1600px) {
+  .wrap { width: min(1400px, calc(100% - 4rem)) !important; }
+}
+
+/* Desktop nav: keep hamburger for density, but make open menu a neat panel */
+@media (min-width: 1024px) {
+  .nav-inner {
+    padding: 0.85rem 0 !important;
+  }
+  .nav-links.open {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.35rem 0.75rem !important;
+    max-height: none !important;
+    padding: 0.85rem 0.75rem !important;
+  }
+  .nav-links.open a {
+    width: auto !important;
+  }
+  .nav-group-label {
+    grid-column: 1 / -1;
+    margin-top: 0.35rem;
+  }
+}
+
+/* Tables */
+.schedule-wrap, .table-shell {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--ds-radius-sm);
+  border: var(--ds-border);
+}
+.schedule, .lb {
+  min-width: 0;
+}
+@media (max-width: 767px) {
+  .schedule { min-width: 640px; }
+  .lb { min-width: 460px; }
+}
+
+/* Modals */
+.admin-overlay .admin-panel,
+.modal-panel,
+.auth-card,
+.login-modal {
+  max-width: min(520px, calc(100vw - 1.5rem)) !important;
+  max-height: min(88dvh, 92vh) !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--ds-radius) !important;
+  box-shadow: var(--ds-shadow) !important;
+  border: var(--ds-border) !important;
+  background: rgba(10, 16, 28, 0.97) !important;
+}
+@media (min-width: 768px) {
+  .admin-overlay .admin-panel,
+  .modal-panel {
+    max-width: min(560px, 92vw) !important;
+  }
+}
+
+/* Reduce continuous boss/streak visual noise when not essential */
+body.arena-playing.streak-hot #gameView.active {
+  animation: none !important;
+  box-shadow: inset 0 0 0 2px rgba(45, 212, 191, 0.28) !important;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .matrix-bg, .matrix-col, .grid-bg { display: none !important; }
+}
 
 /* ===================================================================
    PERF + MOBILE HARDENING (targeted, non-breaking)

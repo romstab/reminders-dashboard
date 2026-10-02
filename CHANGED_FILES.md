@@ -1,13 +1,12 @@
-# Correction Pass — Changed Files
+# UI/UX Overhaul — Changed Files
 
-Only regressions from the previous UI/performance update were fixed.
-No redesign, no Firebase path changes, no auth/AI/arena logic changes.
+Visual system and responsive layout only. No auth, Firebase, AI, or game-logic changes.
 
-| File | Correction |
-| ---- | ---------- |
-| `game.js` | Restored valid `signalPushToSection()` (was corrupted mid-string into `listenPushSignal`). Removed leftover `}, 45000)` polling remnant. Replaced ignore-on-hidden with real subscribe/unsubscribe: `startPushSignalListener` / `stopPushSignalListener` on `visibilitychange` (bound once). Unified postMessage type to `SHOW_UPDATE` to match `sw.js`. |
-| `sw.js` | Added `icon-maskable-192.png` and `icon-maskable-512.png` to precache. Bumped cache to `bscs1a-rst-hub-v5`. |
-| `CHANGED_FILES.md` | Updated for this correction pass. |
+| File | Changes |
+| ---- | ------- |
+| `index.html` | Removed PERIMETER ENERGY spinning conic-gradient / rotating rim effects on cards, hero, pins, links, logo, page frame. Replaced with static academic design tokens (border, shadow, radius, colors). Coherent type scale via clamp(). Progressive breakpoints (≤480 / 481–767 / 768+ / 1024+ / 1280+ / 1600+). Desktop max-width 1280–1400px centered. Multi-column grids for officers, stats, shortcuts, hero. Arena question area max-width on desktop. Quieter matrix ambient. Reduced blur. Guest-role links kept functional without animated rims. |
+| `dashboard.html` | Static background (no continuous gradient animation). Wider max container (1200–1280px). Overview stats grid responsive. Softer glass/shadow. Mobile input zoom prevention retained. |
+| `CHANGED_FILES.md` | This summary. |
 
-## Unchanged in this pass
-`index.html`, `dashboard.html`, `manifest.webmanifest`, icons, `logo.png`, `package.json`, `vercel.json`, all `api/*` files.
+## Unchanged
+`game.js`, `sw.js`, `manifest.webmanifest`, icons, `logo.png`, `package.json`, `vercel.json`, all `api/*` — behavior and paths preserved.
