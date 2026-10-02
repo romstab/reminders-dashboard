@@ -1,6 +1,17 @@
-/* BSCS 1-A RST Hub — lightweight service worker */
-const CACHE = "bscs1a-rst-hub-v3";
-const PRECACHE = ["./", "./index.html", "./game.js", "./logo.png", "./manifest.webmanifest"];
+/* BSCS 1-A RST Hub — lightweight service worker (v4) */
+const CACHE = "bscs1a-rst-hub-v5";
+const PRECACHE = [
+  "./",
+  "./index.html",
+  "./dashboard.html",
+  "./game.js",
+  "./logo.png",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-maskable-192.png",
+  "./icon-maskable-512.png",
+  "./manifest.webmanifest"
+];
 
 /** Never intercept / cache these (AI API, Firebase, Google APIs) */
 function shouldBypass(urlString) {
@@ -21,6 +32,17 @@ function shouldBypass(urlString) {
   return false;
 }
 
+/** HTML/JS should prefer network so updates reach users; fall back to cache offline */
+function isShellAsset(urlString) {
+  try {
+    const u = new URL(urlString);
+    const p = u.pathname.toLowerCase();
+    return p.endsWith(".html") || p.endsWith(".js") || p.endsWith("/") || p.endsWith("manifest.webmanifest");
+  } catch (e) {
+    return false;
+  }
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE).then((cache) => cache.addAll(PRECACHE).catch(() => {})).then(() => self.skipWaiting())
@@ -38,9 +60,24 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
-  // Bypass: non-GET (POST/PUT/OPTIONS) and external AI/API hosts
   if (req.method !== "GET") return;
   if (shouldBypass(req.url)) return;
+
+  // Network-first for shell so code updates propagate; cache-first for static assets
+  if (isShellAsset(req.url)) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          if (res.ok) {
+            caches.open(CACHE).then((cache) => cache.put(req, copy)).catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => caches.match(req).then((c) => c || caches.match("./index.html")))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(req).then((cached) => {
@@ -82,7 +119,7 @@ self.addEventListener("notificationclick", (event) => {
 self.addEventListener("message", (event) => {
   const data = event.data || {};
   if (data.type === "SHOW_UPDATE" && data.title) {
-    const icon = data.icon || new URL("./logo.png", self.location.href).href;
+    const icon = data.icon || new URL("./icon-192.png", self.location.href).href;
     event.waitUntil(
       self.registration.showNotification(data.title, {
         body: data.body || "May bagong update sa BSCS 1-A hub.",

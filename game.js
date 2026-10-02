@@ -894,6 +894,7 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
   }
 
   let presenceTimer = null;
+  let pushSignalUnsub = null;
   let lastPresenceWrite = 0;
 
   async function recordHubPresence(reason) {
@@ -938,6 +939,7 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
     }
   }
 
+  let presenceVisBound = false;
   function startPresenceHeartbeat() {
     if (presenceTimer) window.clearInterval(presenceTimer);
     if (!(isClassmate() || isAdmin())) return;
@@ -947,11 +949,15 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
         recordHubPresence("heartbeat");
       }
     }, 60000);
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") {
-        recordHubPresence("resume");
-      }
-    });
+    // Bind visibility listener only once to avoid duplicates on re-login
+    if (!presenceVisBound) {
+      presenceVisBound = true;
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible" && (isClassmate() || isAdmin())) {
+          recordHubPresence("resume");
+        }
+      });
+    }
   }
 
   async function fetchPresenceMap() {
@@ -1025,31 +1031,47 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
     }
   }
 
-  function listenPushSignal() {
-    // Poll push_signal while hub is open (closed-app push needs FCM server / Cloud Function)
+  let pushSignalLastTs = 0;
+  let pushSignalVisBound = false;
+
+  function stopPushSignalListener() {
+    if (typeof pushSignalUnsub === "function") {
+      try { pushSignalUnsub(); } catch (e) { /* ignore */ }
+      pushSignalUnsub = null;
+    }
+  }
+
+  function startPushSignalListener() {
     if (!db) return;
-    let lastTs = 0;
+    // Ensure only one active listener
+    stopPushSignalListener();
+    if (document.visibilityState !== "visible") return;
+    if (!(isClassmate() || isAdmin())) return;
+
     try {
-      lastTs = Number(localStorage.getItem("bscs1a_last_push_signal_ts") || 0);
+      if (!pushSignalLastTs) {
+        pushSignalLastTs = Number(localStorage.getItem("bscs1a_last_push_signal_ts") || 0);
+      }
     } catch (e) { /* ignore */ }
-    window.setInterval(async () => {
-      if (!(isClassmate() || isAdmin())) return;
-      if (document.visibilityState !== "visible" && !document.hidden) return;
+
+    const signalRef = ref(db, PUSH_SIGNAL_PATH);
+    pushSignalUnsub = onValue(signalRef, (snap) => {
       try {
-        const snap = await get(ref(db, PUSH_SIGNAL_PATH));
+        if (!(isClassmate() || isAdmin())) return;
         if (!snap.exists()) return;
-        const val = snap.val();
-        const ts = Number(val && val.ts || 0);
-        if (!ts || ts <= lastTs) return;
+        const val = snap.val() || {};
+        const ts = Number(val.ts || 0);
+        if (!ts || ts <= pushSignalLastTs) return;
+        // Ignore signals we ourselves just wrote
         if (String(val.by || "") === String(authState.username || "")) {
-          lastTs = ts;
+          pushSignalLastTs = ts;
           try { localStorage.setItem("bscs1a_last_push_signal_ts", String(ts)); } catch (e) { /* ignore */ }
           return;
         }
-        lastTs = ts;
+        pushSignalLastTs = ts;
         try { localStorage.setItem("bscs1a_last_push_signal_ts", String(ts)); } catch (e) { /* ignore */ }
         if (notificationsSupported() && Notification.permission === "granted") {
-          const icon = hubAssetUrl("logo.png");
+          const icon = hubAssetUrl("icon-192.png");
           if (navigator.serviceWorker && navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({
               type: "SHOW_UPDATE",
@@ -1069,7 +1091,33 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
       } catch (error) {
         /* ignore */
       }
-    }, 45000);
+    }, (error) => {
+      console.warn("[Push] signal listen error:", error);
+    });
+  }
+
+  function listenPushSignal() {
+    // Realtime Firebase listener for open-tab push signals.
+    // Subscribe only while the page is visible; fully unsubscribe when hidden.
+    // Closed-app push still requires FCM / Cloud Function.
+    if (!db) return;
+
+    try {
+      pushSignalLastTs = Number(localStorage.getItem("bscs1a_last_push_signal_ts") || 0);
+    } catch (e) { /* ignore */ }
+
+    startPushSignalListener();
+
+    if (!pushSignalVisBound) {
+      pushSignalVisBound = true;
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          startPushSignalListener();
+        } else {
+          stopPushSignalListener();
+        }
+      });
+    }
   }
 
   /* ---------------- Mistake Notebook (persistent) ---------------- */
@@ -3831,23 +3879,43 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
   function initMatrixBackground() {
     const host = $("matrixBg");
     if (!host) return;
-    const colCount = Math.max(10, Math.floor(window.innerWidth / 26));
+    // Skip ambient matrix when user prefers reduced motion
+    try {
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        host.innerHTML = "";
+        return;
+      }
+    } catch (e) { /* ignore */ }
+
+    // Fewer columns + shorter streams on phones to cut paint/composite cost
+    const isNarrow = window.innerWidth < 640;
+    const step = isNarrow ? 42 : 28;
+    const colCount = Math.max(isNarrow ? 6 : 10, Math.min(isNarrow ? 14 : 28, Math.floor(window.innerWidth / step)));
     const frag = document.createDocumentFragment();
     for (let i = 0; i < colCount; i += 1) {
       const col = document.createElement("div");
       col.className = "matrix-col";
       col.style.left = `${(i / colCount) * 100}%`;
-      col.style.animationDuration = `${8 + Math.random() * 10}s`;
-      col.style.animationDelay = `${Math.random() * -12}s`;
+      col.style.animationDuration = `${10 + Math.random() * 12}s`;
+      col.style.animationDelay = `${Math.random() * -14}s`;
       let stream = "";
-      const rows = 40 + Math.floor(Math.random() * 30);
+      const rows = (isNarrow ? 18 : 32) + Math.floor(Math.random() * (isNarrow ? 12 : 20));
       for (let r = 0; r < rows; r += 1) {
         stream += Math.round(Math.random()) + "\n";
       }
       col.textContent = stream;
       frag.appendChild(col);
     }
+    host.innerHTML = "";
     host.appendChild(frag);
+
+    // Pause matrix animation while the tab is hidden (saves mobile CPU)
+    if (!host.dataset.visBound) {
+      host.dataset.visBound = "1";
+      document.addEventListener("visibilitychange", () => {
+        document.body.classList.toggle("hub-bg-paused", document.visibilityState !== "visible");
+      });
+    }
   }
 
   /* ---------------- Mobile nav + smooth scroll ---------------- */
@@ -4134,12 +4202,15 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
       });
     });
     selectRunType("ranked");
-    // Refresh daily countdown while login is visible
-    window.setInterval(() => {
-      if (elements.loginView && elements.loginView.classList.contains("active")) {
-        updateDailyMeta();
-      }
-    }, 30000);
+    // Refresh daily countdown while login is visible (once)
+    if (!window.__bscsDailyMetaTimer) {
+      window.__bscsDailyMetaTimer = window.setInterval(() => {
+        if (document.visibilityState !== "visible") return;
+        if (elements.loginView && elements.loginView.classList.contains("active")) {
+          updateDailyMeta();
+        }
+      }, 30000);
+    }
   }
 
   function selectRunType(runType) {
@@ -4920,12 +4991,15 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
       });
     }
     syncNotifButton();
-    // Poll for new officer updates while hub is open
-    window.setInterval(() => {
-      try {
-        if (isClassmate() || isAdmin()) refreshOfficerUpdateBadge();
-      } catch (e) { /* ignore */ }
-    }, 90000);
+    // Poll for new officer updates while hub is open (once)
+    if (!window.__bscsOfficerBadgeTimer) {
+      window.__bscsOfficerBadgeTimer = window.setInterval(() => {
+        try {
+          if (document.visibilityState !== "visible") return;
+          if (isClassmate() || isAdmin()) refreshOfficerUpdateBadge();
+        } catch (e) { /* ignore */ }
+      }, 90000);
+    }
     listenPushSignal();
   }
 
@@ -8059,10 +8133,13 @@ import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.g
     migrateLegacyScores().then(() => renderLeaderboard());
     renderMasteryBars();
     renderTodayStrip();
-    // Keep Room Finder / Next Class in sync with real clock
-    window.setInterval(() => {
-      try { renderTodayStrip(); } catch (e) { /* ignore */ }
-    }, 60000);
+    // Keep Room Finder / Next Class in sync with real clock (once)
+    if (!window.__bscsTodayStripTimer) {
+      window.__bscsTodayStripTimer = window.setInterval(() => {
+        if (document.visibilityState !== "visible") return;
+        try { renderTodayStrip(); } catch (e) { /* ignore */ }
+      }, 60000);
+    }
     initStudyRooms();
     renderMyDesk();
     loadAdminPin();

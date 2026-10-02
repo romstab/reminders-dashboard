@@ -9,8 +9,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="BSCS 1-A RST" />
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon-192.png" sizes="192x192" />
   <link rel="icon" href="logo.png" />
-  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" sizes="192x192" />
   <meta
     name="description"
     content="BSCS 1-A Official Section Hub by RST — LSPU Siniloan. Reviewer Arena, schedule, officers, and section tools."
@@ -74,7 +75,8 @@ body {
     radial-gradient(560px 420px at 96% 4%, rgba(56, 189, 248, 0.12), transparent 52%),
     radial-gradient(480px 360px at 50% 110%, rgba(167, 139, 250, 0.08), transparent 55%),
     linear-gradient(165deg, #030912 0%, var(--bg) 28%, var(--bg-2) 62%, #06101f 100%);
-  background-attachment: fixed;
+  /* fixed attachment causes continuous repaint/jank on many Android browsers */
+  background-attachment: scroll;
   overflow-x: hidden;
   min-height: 100dvh;
 }
@@ -144,8 +146,8 @@ img { display: block; max-width: 100%; }
     linear-gradient(180deg, rgba(16, 32, 58, 0.78), rgba(10, 20, 40, 0.55));
   border: 1px solid var(--line);
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
-  backdrop-filter: blur(20px) saturate(155%);
-  -webkit-backdrop-filter: blur(20px) saturate(155%);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
   position: relative; z-index: 1;
 }
 .card { border-radius: var(--radius); }
@@ -4176,6 +4178,136 @@ body.role-guest .top-links {
     padding-bottom: 1.55rem !important;
   }
 }
+
+
+/* ===================================================================
+   PERF + MOBILE HARDENING (targeted, non-breaking)
+   =================================================================== */
+
+/* Prevent accidental horizontal scroll from children */
+html { overflow-x: hidden; max-width: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+.wrap, main, section, .card, .glass, .pad, .hero-main, .hero-side,
+.arena-shell, .arena-content, .admin-panel, .modal-panel {
+  max-width: 100%;
+}
+
+/* Touch-friendlier controls */
+button, .btn, .arena-btn, .choice, .nav-links a, .lifeline-btn,
+input, select, textarea {
+  touch-action: manipulation;
+}
+
+/* Reduce continuous GPU cost of ambient matrix on small screens */
+@media (max-width: 640px) {
+  .matrix-bg { opacity: 0.05; }
+  .matrix-col { font-size: 11px; text-shadow: none; }
+  .grid-bg { opacity: 0.1; background-size: 40px 40px; }
+  .glass, .card {
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+  }
+  .nav {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  /* Slightly tighter page padding on phones */
+  .wrap { width: min(var(--max), calc(100% - 0.9rem)); }
+  .pad { padding: 0.85rem; }
+  .hero { padding: 1.15rem 0 0.75rem; }
+  .hero-main { padding: 0.95rem; }
+  /* Choice tiles: keep 2-col but ensure min readable text */
+  .choice {
+    padding: 0.75rem 0.7rem;
+    min-height: 3.2rem;
+    font-size: clamp(0.76rem, 3.2vw, 0.9rem);
+  }
+  /* HUD denser on phones */
+  .hud-card { padding: 0.5rem 0.55rem; }
+  .hud-value { font-size: 0.84rem; }
+  /* Tables stay contained */
+  .schedule-wrap, .table-shell {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table { min-width: 0; }
+}
+
+/* Very small phones (320–360) */
+@media (max-width: 360px) {
+  .choices { gap: 0.4rem; }
+  .choice {
+    padding: 0.65rem 0.55rem;
+    min-height: 3rem;
+    font-size: 0.74rem;
+    border-radius: 12px;
+  }
+  .question-text { font-size: clamp(0.95rem, 4.4vw, 1.15rem); }
+  .lifeline-btn { flex: 1 1 6.5rem; font-size: 0.74rem; padding: 0.5rem 0.65rem; }
+  .brand-copy strong { font-size: 0.84rem; }
+  .brand-copy span { font-size: 0.7rem; }
+  .logo-badge { width: 34px; height: 34px; font-size: 0.62rem; }
+  .nav-toggle { width: 40px; height: 40px; }
+  .section-title h2 { font-size: 1.02rem; }
+  .statbox, .note-card, .arena-panel { padding: 0.75rem; }
+  .run-type-grid { gap: 0.45rem; }
+}
+
+/* Modals: always fit viewport height on mobile */
+.admin-overlay,
+.modal-overlay,
+[class*="overlay"] {
+  overscroll-behavior: contain;
+}
+.admin-overlay .admin-panel,
+.modal-panel,
+.login-modal,
+.auth-card {
+  max-height: min(88dvh, 92vh);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  width: min(100%, 100%);
+}
+
+/* Desktop: restore slightly stronger glass without overdoing it */
+@media (min-width: 900px) {
+  .glass, .card {
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+  }
+  body {
+    background-attachment: fixed;
+  }
+}
+
+/* Respect reduced motion fully (matrix columns included) */
+@media (prefers-reduced-motion: reduce) {
+  .matrix-col,
+  .matrix-bg,
+  .grid-bg,
+  body.arena-playing.streak-hot #gameView.active,
+  .admin-pin,
+  .top-link,
+  .room-finder,
+  .reveal-on-load,
+  main#main > .wrap > section {
+    animation: none !important;
+  }
+  .matrix-bg { opacity: 0.03; }
+}
+
+/* When tab is backgrounded via class (set by JS) */
+body.hub-bg-paused .matrix-col {
+  animation-play-state: paused !important;
+}
+
+/* Avoid layout thrash from long unbroken strings */
+.choice, .question-text, .ou-text, .hud-value, .brand-copy strong, .brand-copy span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 
 </style>
 </head>
